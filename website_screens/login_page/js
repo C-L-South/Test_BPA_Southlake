@@ -1,1 +1,19 @@
 
+const loginBtn = document.getElementById('loginBtn');
+const signupBtn = document.getElementById('signupBtn');
+const usernameField = document.getElementById('username');
+const passwordField = document.getElementById('password');
+
+loginBtn.addEventListener('click', () => {
+  const username = usernameField.value.trim();
+  const password = passwordField.value.trim();
+
+  alert(`Welcome, ${username}! You are logged in.`);
+
+});
+
+
+signupBtn.addEventListener('click', () => {
+  alert('you signed up');
+});
+
