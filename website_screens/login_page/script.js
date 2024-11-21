@@ -18,6 +18,7 @@ signupBtn.addEventListener('click', () => {
     .then((userCredential) => {
       const user = userCredential.user;
       alert(`Signup successful! Welcome, ${user.email}`);
+      window.location.href = 'home_page/home.html';
     })
     .catch((error) => {
       alert(`Signup failed: ${error.message}`);
@@ -38,6 +39,7 @@ loginBtn.addEventListener('click', () => {
     .then((userCredential) => {
       const user = userCredential.user;
       alert(`Login successful! Welcome back, ${user.email}`);
+      window.location.href = 'home_page/home.html';
     })
     .catch((error) => {
       alert(`Login failed: ${error.message}`);
