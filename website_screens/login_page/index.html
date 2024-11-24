@@ -5,9 +5,9 @@
   <title>Login Page</title>
   <link rel="stylesheet" href="login_page/styles.css">
 
-  <!-- Firebase Compatibility -->
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
 </head>
 <body>
   <div class="container">
@@ -17,22 +17,7 @@
     <button class="button login-button" id="loginBtn">Login</button>
     <button class="button signup-button" id="signupBtn">Sign Up</button>
   </div>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
-      authDomain: "bpa-user-info-web-application.firebaseapp.com",
-      databaseURL: "https://bpa-user-info-web-application-default-rtdb.firebaseio.com",
-      projectId: "bpa-user-info-web-application",
-      storageBucket: "bpa-user-info-web-application.firebasestorage.app",
-      messagingSenderId: "374266916055",
-      appId: "1:374266916055:web:837b7d9bb130e101a99492",
-      measurementId: "G-4V2QYVYVKE"
-    };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-  </script>
 
   <script src="script.js"></script>
 </body>
