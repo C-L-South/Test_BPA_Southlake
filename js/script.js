@@ -1,7 +1,6 @@
 const firebaseConfig = {
   apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
   authDomain: "bpa-user-info-web-application.firebaseapp.com",
-  databaseURL: "https://bpa-user-info-web-application-default-rtdb.firebaseio.com",
   projectId: "bpa-user-info-web-application",
   storageBucket: "bpa-user-info-web-application.firebasestorage.app",
   messagingSenderId: "374266916055",
@@ -10,15 +9,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase in js file
-firebase.initializeApp(firebaseConfig);
-
-// constants and variables (no variables yet)
 const signupBtn = document.getElementById('signupBtn');
 const loginBtn = document.getElementById('loginBtn');
 const usernameField = document.getElementById('username');
 const passwordField = document.getElementById('password');
+firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.database();
+const db = firebase.firestore();
 
 // Signup 
 signupBtn.addEventListener('click', () => {
@@ -33,13 +30,14 @@ signupBtn.addEventListener('click', () => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      db.ref('customers/' + user.uid).set({
+      // Use Firestore to set user data
+      db.collection('customers').doc(user.uid).set({
         email: user.email,
         role: "customer"
       })
       .then(() => {
         alert(`Signup successful! Welcome, ${user.email}`);
-        window.location.href = 'home_page/home.html';
+        window.location.href = '/website_screens/home_page/home.html';
       })
     })
     .catch((error) => {
@@ -60,21 +58,22 @@ loginBtn.addEventListener('click', () => {
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      db.ref('administrators/' + user.uid).once('value')
+      // Check if the user is an administrator
+      db.collection('administrators').doc(user.uid).get()
         .then((adminSnapshot) => {
-          if (adminSnapshot.exists()) {
-            const adminData = adminSnapshot.val();
+          if (adminSnapshot.exists) {
+            const adminData = adminSnapshot.data();
             alert(`Welcome back, ${adminData.email}! You are an administrator.`);
-            window.location.href = 'home_page/home.html';
+            window.location.href = '/website_screens/home_page/home.html';
           } 
-          else 
-          {
-            db.ref('customers/' + user.uid).once('value')
+          else {
+            // Check if the user is a customer
+            db.collection('customers').doc(user.uid).get()
               .then((customerSnapshot) => {
-                if (customerSnapshot.exists()) {
-                  const customerData = customerSnapshot.val();
+                if (customerSnapshot.exists) {
+                  const customerData = customerSnapshot.data();
                   alert(`Welcome back, ${customerData.email}!`);
-                  window.location.href = 'home_page/home.html';
+                  window.location.href = '/website_screens/home_page/home.html';
                 }
               })
           }
@@ -86,10 +85,12 @@ loginBtn.addEventListener('click', () => {
     });
 });
 
+// Promote user to admin
 function promoteToAdmin(userId, email) {
-  const customerRef = db.ref('customers/' + userId);
-  const adminRef = db.ref('administrators/' + userId);
-  customerRef.remove()
+  const customerRef = db.collection('customers').doc(userId);
+  const adminRef = db.collection('administrators').doc(userId);
+
+  customerRef.delete()
     .then(() => {
       return adminRef.set({
         email: email,
@@ -97,7 +98,8 @@ function promoteToAdmin(userId, email) {
       });
     })
 }
+
+// Example: Promote a user to admin
 const admin1userId = "TrcTDmvzEngEtvLEIrskqojI3542";
 const admin1email = "testadmin@gmail.com";
-promoteToAdmin(admin1userId,admin1email);
-
+promoteToAdmin(admin1userId, admin1email);
