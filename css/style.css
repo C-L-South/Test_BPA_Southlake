@@ -5,19 +5,19 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #f4f4f9;
+    background: #f6f6f6;
     }
     .container {
     width: 550px;
     height: 650px;
-    background: #D9D9D9;
+    background: #D4D4CE;
     box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     position: relative;
     }
     .header {
     text-align: center;
-    color: #D43537;
+    color: #287094;
     font-size: 48px;
     font-weight: bold;
     padding: 20px 0;
@@ -27,7 +27,7 @@
     margin: 20px auto;
     height: 40px;
     border-radius: 5px;
-    border: 1px solid #D43537;
+    border: 1px solid #023246;
     padding: 0 10px;
     display: block;
     }
@@ -44,8 +44,8 @@
     display: block;
     }
     .login-button {
-    background: #D43537;
+    background: #287094;
     }
     .signup-button {
-    background: #555;
+    background: #023246;
     }
