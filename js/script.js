@@ -37,7 +37,7 @@ signupBtn.addEventListener('click', () => {
       })
       .then(() => {
         alert(`Signup successful! Welcome, ${user.email}`);
-        window.location.href = '/website_screens/home_page/home.html';
+        window.location.href = '/website_screens/home_page/no_home.html';
       })
     })
     .catch((error) => {
@@ -64,7 +64,7 @@ loginBtn.addEventListener('click', () => {
           if (adminSnapshot.exists) {
             const adminData = adminSnapshot.data();
             alert(`Welcome back, ${adminData.email}! You are an administrator.`);
-            window.location.href = '/website_screens/home_page/home.html';
+            window.location.href = '/website_screens/home_page/no_home.html';
           } 
           else {
             // Check if the user is a customer
@@ -73,7 +73,7 @@ loginBtn.addEventListener('click', () => {
                 if (customerSnapshot.exists) {
                   const customerData = customerSnapshot.data();
                   alert(`Welcome back, ${customerData.email}!`);
-                  window.location.href = '/website_screens/home_page/home.html';
+                  window.location.href = '/website_screens/home_page/no_home.html';
                 }
               })
           }
