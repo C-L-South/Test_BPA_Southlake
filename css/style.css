@@ -1,51 +1,73 @@
-    body {
+body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background: #f6f6f6;
+    background-image: url('/assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     }
     .container {
-    width: 550px;
-    height: 650px;
-    background: #D4D4CE;
+    width: 400px;
+    height: 500px;
+    background: #ffffff;
     box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     position: relative;
     }
     .header {
-    text-align: center;
-    color: #287094;
-    font-size: 48px;
+    text-align: left;
+    margin-left: 40px;
+    color: #000000;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 32px;
     font-weight: bold;
-    padding: 20px 0;
+    padding: 10px 0;
+    margin-top: 50px;
+    }
+    .subtitle {
+    text-align: left;
+    margin-left: 35px;
+    color:#717c82;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    padding: 0 5px;
+    margin-bottom: 30px;
     }
     .input-field {
-    width: 80%;
+    width: 75%;
     margin: 20px auto;
     height: 40px;
-    border-radius: 5px;
-    border: 1px solid #023246;
+    border-radius: 15px;
+    border: 1px solid #099dff;
     padding: 0 10px;
     display: block;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    .username {
+    margin-top: 50px;
     }
     .button {
     width: 80%;
     margin: 20px auto;
     height: 50px;
     border: none;
-    border-radius: 5px;
+    border-radius: 35px;
     color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     display: block;
     }
     .login-button {
-    background: #287094;
+    background: #68cdff;
+    margin-top: 50px;
     }
     .signup-button {
-    background: #023246;
+    background: #099dff;
     }
