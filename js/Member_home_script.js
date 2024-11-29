@@ -14,10 +14,23 @@ const db = firebase.firestore();
 const sendInviteBtn = document.getElementById('sendInviteBtn');
 const inviteEmail = document.getElementById('inviteEmail');
 
-  let team_name=localStorage.getItem("Team Name");
-if (team_name) {
-    console.log(team_name);
-    document.getElementById("team name").textContent = team_name;
-} else {
-    console.log("No user data found.");
-}
+firebase.auth().onAuthStateChanged((currentUser) => {
+  if (currentUser) { 
+    
+    let user = currentUser;
+    db.collection('users').doc(user.uid).get()
+      .then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+          console.log(`Email: ${userData.email}, Role: ${userData.role}, Status : ${userData.status}`);
+          console.log(userData.team);
+          document.getElementById("team name").textContent = userData.team;
+          
+        } else {
+          console.error("No user data found");
+        }
+      });
+  } else {
+    console.error("No user logged in");
+  }
+});
