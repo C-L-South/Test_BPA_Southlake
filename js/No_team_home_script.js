@@ -8,19 +8,111 @@ const firebaseConfig = {
   measurementId: "G-4V2QYVYVKE"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.firestore();
+const SERVER_URL = 'http://localhost:3000';
+let user= null;
 const createBtn = document.getElementById('createBtn');
 const Team_name = document.getElementById('team_name');
+const invitesContainer = document.getElementById('div');
 
-  firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
+function acceptInvite(userId, inviteId, teamName) {
+  console.log(`Sending accept request for Invite ID: ${inviteId}, Team: ${teamName}`);
+
+  // Send HTTPS POST request to the server
+  fetch(`${SERVER_URL}/acceptInvite`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId: userId,
+      inviteId: inviteId,
+      teamName: teamName
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Directly check if there's a 'message' in the response
+      if (data.message) {
+        // Display the success message
+        alert(data.message);
+      } else {
+        alert(`Failed to accept invite: Unknown error`);
+      }
+    })
+    .catch((error) => {
+      console.error('Error while accepting invite:', error);
+      alert('An error occurred while accepting the invite.');
+    });
+}
+function declineInvite(inviteId) {
+  console.log(`Sending decline request for Invite ID: ${inviteId}`);
+  
+  // Send HTTPS POST request to the server
+  fetch(`${SERVER_URL}/declineInvite`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      inviteId: inviteId,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert('Invite declined successfully!');
+      } else {
+        alert(`Failed to decline invite: ${data.message}`);
+      }
+    })
+    .catch((error) => {
+      console.error('Error while declining invite:', error);
+      alert('An error occurred while declining the invite.');
+    });
+}
+
+
+function loadInvites(userId) {
+  fetch(`${SERVER_URL}/getInvites/${userId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.invites && data.invites.length > 0) {
+        invitesContainer.innerHTML = '';  // Clear any previous invites
+        data.invites.forEach(invite => {
+          const inviteDiv = document.createElement('div');
+          console.log(user.uid);
+          console.log(invite.TeamName);
+          inviteDiv.innerHTML = `
+            <p>Invite to join team: ${invite.TeamName}</p>
+            <button onclick="acceptInvite('${user.uid}','${invite.id}', '${invite.TeamName}')">Accept</button>
+            <button onclick="declineInvite('${invite.id}')">Decline</button>
+          `;
+          invitesContainer.appendChild(inviteDiv);
+        });
+      } else {
+        invitesContainer.innerHTML = '<p>No invites at the moment.</p>';
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching invites:', error);
+      invitesContainer.innerHTML = '<p>Error loading invites.</p>';
+    });
+}
+
+
+
+  firebase.auth().onAuthStateChanged((currentUser) => {
+      if (currentUser) { //if user is not null aka logged in
         // User is logged in, fetch data from Firestore
-        db.collection('customers').doc(user.uid).get()
+        
+        user = currentUser;
+        loadInvites(user.uid);
+        db.collection('users').doc(user.uid).get()
           .then((doc) => {
             if (doc.exists) {
               const userData = doc.data();
-              console.log(`Email: ${userData.email}, Role: ${userData.role}`);
+              console.log(`Email: ${userData.email}, Role: ${userData.role}, Status : ${userData.status}`);
             } else {
               console.error("No user data found");
             }
@@ -29,128 +121,41 @@ const Team_name = document.getElementById('team_name');
         console.error("No user logged in");
       }
     });
+    
 
     createBtn.addEventListener('click', () => {
-      const Team_name_value = Team_name.value.trim();
-      const user = firebase.auth().currentUser;
-      if (!Team_name_value) {
-        alert("Please enter a valid team name.");
+      
+
+      const Team_name_text = Team_name.value.trim();
+
+    
+      if (!Team_name_text) {
+        alert("No team name.");
         return;
-      }	
+      }
 
       if (user) {
-        db.collection('customers').doc(user.uid).get()
-          .then((userDoc) => {
-            if (userDoc.exists) {
-              const userData = userDoc.data();
-              if (userData.hasCreatedOrJoinedTeam) {
-                alert("You have already created or joined a team.");
-              } 
-              else {
-                db.collection('teams').doc(Team_name_value).get()
-                  .then((doc) => {
-                    if (doc.exists) {
-                      alert("Team name already exists.");
-                    } 
-                    else {
-                      db.collection('teams').doc(Team_name_value).set({
-                        Leader: user.email
-                      })
-                      .then(() => {
-                        db.collection('customers').doc(user.uid).update({
-                          hasCreatedOrJoinedTeam: true
-                        })
-                        .then(() => {
-                          alert("Team created successfully!");
-                          console.log(`Team created by: ${user.email} called: ${Team_name_value}`);
-                          localStorage.setItem("Team Name", Team_name_value);
-                          window.location.href = '/website_screens/home_page/home_team_leader.html';
-                          
-                        })
-                        .catch((error) => {
-                          console.error("Error adding team: ", error);
-                          alert("Error creating team.");
-                        });
-                      })
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Error checking document existence: ", error);
-                  });
-              }
-            } 
-            else {
-              console.error("No user logged in");
-              alert("You need to be logged in to create a team.");
+        fetch(`${SERVER_URL}/createTeam`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.uid, teamName: Team_name_text })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              alert("Team created successfully!");
+              console.log(`Team created by: ${user.email} called: ${Team_name_text}`);
+              window.location.href = '/website_screens/home_page/Team_leader_home_index.html';
             }
           })
-      }})
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    db.collection('invites').where("InviteTo", "==", user.email).onSnapshot((querySnapshot) => {
-      const invitesContainer = document.getElementById('invitesContainer');
-      invitesContainer.innerHTML = ""; // Reset existing invites
-
-      querySnapshot.forEach((doc) => {
-        const invite = doc.data();
-        const inviteId = doc.id;
-        const inviteDiv = document.createElement('div');
-        inviteDiv.innerHTML = `
-          <p>Invite to join team: ${invite.TeamName}</p>
-          <button onclick="acceptInvite('${inviteId}', '${invite.TeamName}')">Accept</button>
-          <button onclick="declineInvite('${inviteId}')">Decline</button>
-        `;
-        invitesContainer.appendChild(inviteDiv);
-      });
+          .catch((error) => {
+            console.error('Error:', error);
+            alert("Error creating team.");
+          });
+          
+      }
     });
-  } else {
-    console.error("No user logged in.");
-  }
-});
-function acceptInvite(inviteId, teamName) {
-  const user = firebase.auth().currentUser;
-
-  if (user) {
-    db.collection('customers').doc(user.uid).get()
-      .then((doc) => {
-        if (doc.exists) {
-          const userData = doc.data();
-          if (userData.hasCreatedOrJoinedTeam) {
-            alert("You have already joined or created a team.");
-          } else {
-            db.collection('teams').doc(teamName).update({
-              Members: firebase.firestore.FieldValue.arrayUnion(user.email)
-            })
-            .then(() => {
-              db.collection('customers').doc(user.uid).update({
-                hasCreatedOrJoinedTeam: true
-              })
-              .then(() => {
-                db.collection('invites').doc(inviteId).delete()
-                  .then(() => {
-                    alert(`You have joined the team: ${teamName}`);
-                    window.location.href = '/website_screens/home_page/home_team_member.html';
-                  })
-              })
-            })
-            .catch((error) => {
-              console.error("Error adding member to team: ", error);
-            });
-          }
-        } 
-      })
-  } else {
-    console.error("No user logged in.");
-    alert("You need to be logged in to accept an invite.");
-  }
-}
-
-function declineInvite(inviteId) {
-  db.collection('invites').doc(inviteId).delete()
-    .then(() => {
-      alert("Invite declined.");
-    })
-}
-
-
+    
       
