@@ -13,18 +13,33 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const sendInviteBtn = document.getElementById('sendInviteBtn');
 const inviteEmail = document.getElementById('inviteEmail');
+let user= null;
+let team_name= null;
+const SERVER_URL = 'http://localhost:3000';
 
-  let team_name=localStorage.getItem("Team Name");
-if (team_name) {
-    console.log(team_name);
-    document.getElementById("team name").textContent = team_name;
-} else {
-    console.log("No user data found.");
-}
 
-sendInviteBtn.addEventListener('click', () => {
+firebase.auth().onAuthStateChanged((currentUser) => {
+    if (currentUser) { //if user is not null aka logged in
+        user = currentUser;
+
+      db.collection('users').doc(user.uid).get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            team_name=userData.team;
+            console.log(`Email: ${userData.email}, Role: ${userData.role}, Status : ${userData.status}, team: ${userData.team}`);
+          } else {
+            console.error("No user data found");
+          }
+        });
+    } else {
+      console.error("No user logged in");
+    }
+  });
+
+
+  sendInviteBtn.addEventListener('click', () => {
     const emailToInvite = inviteEmail.value.trim();
-    const user = firebase.auth().currentUser;
 
     if (!emailToInvite) {
         alert("Please enter a valid email address.");
@@ -32,37 +47,27 @@ sendInviteBtn.addEventListener('click', () => {
     }
 
     if (user) {
-        // check if person they are inviting exists as a customer
-        db.collection('customers').where("email", "==", emailToInvite).get()
-            .then((querySnapshot) => {
-                if (!querySnapshot.empty) {
-                    // prevents duplicate invites
-                    db.collection('invites')
-                        .where("InviteTo", "==", emailToInvite)
-                        .where("TeamName", "==", team_name)
-                        .get()
-                        .then((inviteSnapshot) => {
-                            if (!inviteSnapshot.empty) {
-                                alert("An invite to this person for this team already exists.");
-                            } else {
-                                // add the invite if no duplicate is found
-                                db.collection('invites').add({
-                                    InviteTo: emailToInvite,
-                                    TeamName: team_name
-                                })
-                                .then(() => {
-                                    alert("Invite sent successfully!");
-                                })
-                                .catch((error) => {
-                                    console.error("Error sending invite: ", error);
-                                    alert("Error sending invite.");
-                                });
-                            }
-                        })
-                } else {
-                    alert("No user found with that email.");
-                }
+        fetch(`${SERVER_URL}/sendInvite`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                inviterId: user.uid,
+                inviteTo: emailToInvite,
+                teamName: team_name
             })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert("Invite sent successfully!");
+            }
+        })
+        .catch((error) => {
+            console.error("Error sending invite: ", error);
+            alert("Error sending invite.");
+        });
     } else {
         console.error("No user logged in");
         alert("You need to be logged in to send invites.");
