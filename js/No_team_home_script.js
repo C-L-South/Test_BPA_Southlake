@@ -36,6 +36,7 @@ function acceptInvite(userId, inviteId, teamName) {
       if (data.message) {
         // Display the success message
         alert(data.message);
+        window.location.href = '/website_screens/home_page/Team_member_home_index.html';
       } else {
         alert(`Failed to accept invite: Unknown error`);
       }
@@ -158,4 +159,3 @@ function loadInvites(userId) {
       }
     });
     
-      
