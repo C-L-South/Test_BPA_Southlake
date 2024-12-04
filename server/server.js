@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const cors = require('cors');
 
+
 const serviceAccount = require('./serviceAccountKey.json'); 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -14,23 +15,26 @@ app.use(bodyParser.json());
 app.use(cors()); 
 
 // Route to sign up command
+// Route to handle signup via server-side
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    //create user on auth
+    // Create user on Firebase Authentication
     const userRecord = await admin.auth().createUser({
       email: email,
       password: password,
     });
-    //add user on firestore
+
+    // Add user in Firestore
     await db.collection('users').doc(userRecord.uid).set({
       email: userRecord.email,
       role: 'customer',
       status: 'no team',
       team: 'no team'
     });
-    //return success
+
+    // Return success
     res.status(201).json({ message: 'Signup successful', userId: userRecord.uid });
   } catch (error) {
     console.error('Error signing up user:', error);
@@ -38,35 +42,38 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// Route to login command
-app.post('/login', async (req, res) => {
-    const { idToken } = req.body;
-  
-    try {
-      const decodedToken = await admin.auth().verifyIdToken(idToken); //returns authentication info
-      const uid = decodedToken.uid; //gets the uid from it
-  
-      const userRecord = await admin.auth().getUser(uid); //it gets the full user info
-      const userDoc = await db.collection('users').doc(uid).get();
-      if (!userDoc.exists) {
-        res.status(404).json({ message: 'User data not found in Firestore.' });
-        return;
-     }
 
-  
-      res.status(200).json({
-        message: 'Login successful',
-        user: {
-          uid: userRecord.uid, //gets uid
-          email: userRecord.email,//gets info
-          status: userDoc.data().status //gets status aka no_team, leader, etc
-        },
-      });
-    } catch (error) {
-      console.error('Error logging in user:', error);
-      res.status(500).json({ message: 'Login failed', error: error.message });
+// Route to handle login via server-side
+app.post('/login', async (req, res) => {
+  const { idToken } = req.body;
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
+
+    const userDoc = await db.collection('users').doc(uid).get();
+    if (!userDoc.exists) {
+      return res.status(404).json({ message: 'User data not found in Firestore.' });
     }
-  });
+
+    const userData = userDoc.data();
+    
+    // Return the necessary user details
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        uid: uid,
+        email: userData.email,
+        status: userData.status,
+      },
+    });
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({ message: 'Login failed', error: error.message });
+  }
+});
+
+
   
 
 // Route to promote a user to admin
@@ -118,7 +125,8 @@ app.post('/createTeam', async (req, res) => {
     // Create the team and update user status
     await db.collection('teams').doc(teamName).set({
       Leader: userData.email,
-      Members: []
+      Members: [],
+      Goals: []
     });
     await db.collection('users').doc(userId).update({
       status: 'team leader',
@@ -155,7 +163,6 @@ app.get('/getInvites/:userId', async (req, res) => {
     return res.status(500).json({ error: 'Internal server error.' });
   }
 });
-
 
 app.post('/sendInvite', async (req, res) => {
   const { inviterId, inviteTo, teamName } = req.body;
@@ -199,11 +206,11 @@ app.post('/sendInvite', async (req, res) => {
   }
 });
 
-
 app.post('/acceptInvite', async (req, res) => {
-  const { userId, inviteId, teamName } = req.body;
+  const { userId, inviteId } = req.body;
 
   try {
+    // Fetch user document
     const userDoc = await db.collection('users').doc(userId).get();
     if (!userDoc.exists) {
       return res.status(404).json({ error: 'User not found.' });
@@ -214,45 +221,211 @@ app.post('/acceptInvite', async (req, res) => {
       return res.status(400).json({ error: 'You have already joined or created a team.' });
     }
 
+    // Fetch invite document
+    const inviteDoc = await db.collection('invites').doc(inviteId).get();
+    if (!inviteDoc.exists) {
+      return res.status(404).json({ error: 'Invite not found.' });
+    }
+
+    const inviteData = inviteDoc.data();
+    const teamName = inviteData.TeamName;
+
     // Add user to the team
-    await db.collection('teams').doc(teamName).update({
+    const teamRef = db.collection('teams').doc(teamName);
+    const teamDoc = await teamRef.get();
+
+    if (!teamDoc.exists) {
+      return res.status(404).json({ error: 'Team not found.' });
+    }
+
+    // Update the team with the new member
+    await teamRef.update({
       Members: admin.firestore.FieldValue.arrayUnion(userData.email)
     });
+
+    // Update the user's status
     await db.collection('users').doc(userId).update({
       status: 'team member',
       team: teamName
     });
-    const invitesSnapshot = await db.collection('invites').where('InviteTo', '==', userData.email).get();
 
+    // Delete all invites for the user (since they've joined a team)
+    const invitesSnapshot = await db.collection('invites').where('InviteTo', '==', userData.email).get();
     if (!invitesSnapshot.empty) {
       const batch = db.batch();
-
-      // Delete all invites
       invitesSnapshot.forEach((doc) => {
         batch.delete(doc.ref);
       });
-
       await batch.commit();
     }
 
-    return res.status(200).json({ message: `Successfully joined team ${userId}.` });
+    return res.status(200).json({ message: `Successfully joined team ${teamName}.` });
   } catch (error) {
     console.error('Error accepting invite:', error);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 });
 
+
 app.delete('/declineInvite/:inviteId', async (req, res) => {
   const { inviteId } = req.params;
 
   try {
-    await db.collection('invites').doc(inviteId).delete();
+    const inviteRef = db.collection('invites').doc(inviteId);
+    const inviteDoc = await inviteRef.get();
+
+    if (!inviteDoc.exists) {
+      return res.status(404).json({ error: 'Invite not found.' });
+    }
+
+    await inviteRef.delete();
     return res.status(200).json({ message: 'Invite declined.' });
   } catch (error) {
     console.error('Error declining invite:', error);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
+
+// Route to set a goal for a team
+// Route to set a goal for a team
+app.post('/setGoal', async (req, res) => {
+  const { teamName, goalDescription, target, dueDate } = req.body;
+
+  // Check if all required fields are provided
+  if (!teamName || !goalDescription || !target || !dueDate) {
+    return res.status(400).json({ error: 'Team Name, Goal Description, Target, and Due Date are required.' });
+  }
+
+  try {
+    // Fetch the team document
+    const teamRef = db.collection('teams').doc(teamName);
+    const teamDoc = await teamRef.get();
+
+    // Check if the team exists
+    if (!teamDoc.exists) {
+      return res.status(404).json({ error: 'Team not found.' });
+    }
+
+    // Create a new goal object
+    const newGoal = {
+      goalId: db.collection('teams').doc().id, // Generate a unique goal ID
+      description: goalDescription,
+      target: target,
+      dueDate: dueDate,
+      progress: 0,  // Initially, the progress is zero
+      remaining: target // Initially, remaining equals target
+    };
+
+    // Update the team document by adding the new goal to the 'Goals' array
+    await teamRef.update({
+      Goals: admin.firestore.FieldValue.arrayUnion(newGoal)
+    });
+
+    res.status(200).json({ message: 'Goal has been added to the team!' });
+  } catch (error) {
+    console.error('Error adding goal to the team:', error);
+    res.status(500).json({ error: 'Error adding goal to the team' });
+  }
+});
+
+
+// Route to get team goals
+app.post('/getTeamGoals', async (req, res) => {
+  const { teamName } = req.body;
+
+  if (!teamName) {
+    return res.status(400).json({ error: 'Team name is required.' });
+  }
+
+  try {
+    const teamDoc = await db.collection('teams').doc(teamName).get();
+    if (!teamDoc.exists) {
+      return res.status(404).json({ error: 'Team not found.' });
+    }
+
+    const teamData = teamDoc.data();
+    const goals = teamData.Goals || [];
+    res.status(200).json({ goals });
+  } catch (error) {
+    console.error('Error fetching team goals:', error);
+    res.status(500).json({ error: 'Failed to retrieve team goals.' });
+  }
+});
+
+
+
+// Route to add contribution to a goal
+// Route to add contribution to a goal
+app.post('/addContribution', async (req, res) => {
+  const { teamName, goalId, contributionAmount } = req.body;
+
+  // Validate input fields
+  if (!teamName || !goalId || !contributionAmount) {
+    return res.status(400).json({ error: 'Team Name, Goal ID, and Contribution Amount are required.' });
+  }
+
+  try {
+    // Fetch the team document
+    const teamRef = db.collection('teams').doc(teamName);
+    const teamDoc = await teamRef.get();
+
+    // Check if the team document exists
+    if (!teamDoc.exists) {
+      return res.status(404).json({ error: 'Team not found.' });
+    }
+
+    const teamData = teamDoc.data();
+    const goals = teamData.Goals || [];
+    
+    // Find the goal to update
+    const goalIndex = goals.findIndex((goal) => goal.goalId === goalId);
+    if (goalIndex === -1) {
+      return res.status(404).json({ error: 'Goal not found.' });
+    }
+
+    const goal = goals[goalIndex];
+
+    // Update goal progress
+    if (contributionAmount > goal.remaining) {
+      return res.status(400).json({ error: 'Contribution amount exceeds the remaining target.' });
+    }
+
+    goal.remaining -= contributionAmount; // Decrease remaining target
+    goal.progress = ((goal.target - goal.remaining) / goal.target) * 100; // Update progress percentage
+
+    // Update the goal in the goals array
+    goals[goalIndex] = goal;
+
+    // Update the team document with the new goals array
+    await teamRef.update({
+      Goals: goals
+    });
+
+    res.status(200).json({ message: 'Contribution added successfully!', updatedGoal: goal });
+  } catch (error) {
+    console.error('Error adding contribution:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+app.get('/getUserData/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+      const userDoc = await db.collection('users').doc(userId).get();
+      if (!userDoc.exists) {
+          return res.status(404).json({ error: 'User not found.' });
+      }
+
+      const userData = userDoc.data();
+      return res.status(200).json({ user: userData });
+  } catch (error) {
+      console.error('Error fetching user data:', error);
+      return res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
 
 
 // Start the server
