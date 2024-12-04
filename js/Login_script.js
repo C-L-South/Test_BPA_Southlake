@@ -18,50 +18,49 @@ const passwordField = document.getElementById('password');
 // Replace with your backend server URL
 const SERVER_URL = 'http://localhost:3000';
 
-
-
-
 // Signup
 signupBtn.addEventListener('click', async () => {
-const email = usernameField.value.trim();
-const password = passwordField.value.trim();
+  const email = usernameField.value.trim();
+  const password = passwordField.value.trim();
 
-if (!email || !password) {
-  alert('Please fill in both fields.');
-  return;
-}
-
-try {
-
-  const response = await fetch(`${SERVER_URL}/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const result = await response.json();
-  if (response.ok) {
-    alert(result.message);
-    await firebase.auth().signInWithEmailAndPassword(email, password);
-    window.location.href = '/website_screens/home_page/No_team_home_index.html';
-  } else {
-    alert(`Signup failed: ${result.message}`);
+  if (!email || !password) {
+    alert('Please fill in both fields.');
+    return;
   }
-} catch (error) {
-  console.error('Error during signup:', error);
-  alert('An error occurred during signup.');
-}
+
+  try {
+    const response = await fetch(`${SERVER_URL}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert(result.message);
+
+      // Sign in with Firebase Auth to obtain ID token
+      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      // Store session token in sessionStorage
+      sessionStorage.setItem('sessionToken', result.sessionToken);
+      sessionStorage.setItem('userId', result.userId);
+
+      // Redirect to the appropriate home page
+      window.location.href = '/website_screens/home_page/No_team_home_index.html';
+    } else {
+      alert(`Signup failed: ${result.message}`);
+    }
+  } catch (error) {
+    console.error('Error during signup:', error);
+    alert('An error occurred during signup.');
+  }
 });
 
-
-
-
-
-
 // Login
-// Frontend (e.g., HTML or JavaScript)
 loginBtn.addEventListener('click', async () => {
   const email = usernameField.value.trim();
   const password = passwordField.value.trim();
@@ -90,15 +89,16 @@ loginBtn.addEventListener('click', async () => {
 
     const result = await response.json();
     if (response.ok) {
+      // Store session token and user info in sessionStorage
+      sessionStorage.setItem('sessionToken', result.user.sessionToken);
+      sessionStorage.setItem('userId', result.user.uid);
+
+      // Redirect to the appropriate home page based on user status
       if (result.user.status === 'no team') {
-        alert(result.message);
         window.location.href = '/website_screens/home_page/No_team_home_index.html';
-      } else if(result.user.status === 'team member'){
-        alert(result.message);
+      } else if (result.user.status === 'team member') {
         window.location.href = '/website_screens/home_page/Team_member_home_index.html';
-      }
-      else{
-        alert(result.message);
+      } else {
         window.location.href = '/website_screens/home_page/Team_leader_home_index.html';
       }
     } else {
@@ -109,5 +109,3 @@ loginBtn.addEventListener('click', async () => {
     alert(`Login failed: ${error.message}`);
   }
 });
-
-
