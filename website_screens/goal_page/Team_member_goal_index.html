@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Member Goal Page</title>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Team Goals</h1>
+    <div id="goalsList">
+      <!-- Goals will be dynamically loaded here -->
+    </div>
+    <form id="contributionForm">
+      <div class="form-group">
+        <label for="goalSelect">Select Goal:</label>
+        <select id="goalSelect" name="goalSelect" required></select>
+      </div>
+      <div class="form-group">
+        <label for="contributionAmount">Contribution Amount:</label>
+        <input type="number" id="contributionAmount" name="contributionAmount" required>
+      </div>
+      <button type="submit">Add Contribution</button>
+    </form>
+    <button id="goToTeamHome">Go to Team Home</button>
+  </div>
+  <script src="/js/Member_goal_script.js"></script>
+</body>
+</html>
