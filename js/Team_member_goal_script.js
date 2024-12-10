@@ -1,71 +1,105 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
-  authDomain: "bpa-user-info-web-application.firebaseapp.com",
-  projectId: "bpa-user-info-web-application",
-  storageBucket: "bpa-user-info-web-application.firebasestorage.app",
-  messagingSenderId: "374266916055",
-  appId: "1:374266916055:web:837b7d9bb130e101a99492",
-  measurementId: "G-4V2QYVYVKE"
-};
+    apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
+    authDomain: "bpa-user-info-web-application.firebaseapp.com",
+    projectId: "bpa-user-info-web-application",
+    storageBucket: "bpa-user-info-web-application.firebasestorage.app",
+    messagingSenderId: "374266916055",
+    appId: "1:374266916055:web:837b7d9bb130e101a99492",
+    measurementId: "G-4V2QYVYVKE"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  
+  const db = firebase.firestore();
+  const selectTaskDropdown = document.getElementById('goalSelect');
+  const ContributionBtn = document.getElementById("addContributionButton");
+  const ContributionAmount = document.getElementById("contributionAmount");
+  let user = null;
+  let team_name = null;
+  const SERVER_URL = 'http://localhost:3000';
+  firebase.auth().onAuthStateChanged((currentUser) => {
+    if (currentUser) { 
+      user= currentUser;
+  
+      fetch(`${SERVER_URL}/getGoals`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.uid }),
+      })
 
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
-const selectTaskDropdown = document.getElementById('selectTaskDropdown');
-let user = null;
-
-
-// Ensure that Firebase Authentication state is ready before accessing currentUser
-firebase.auth().onAuthStateChanged(async (currentUser) => {
-  if (currentUser) {
-      user = currentUser;
-
-      try {
-          console.log(`User is part of team: ${user.uid}`);
-
-          // Fetch the user data from Firestore
-          let userSnapshot = await db.collection('users').doc(user.uid).get();
-
-          if (userSnapshot.exists) {
-              const userData = userSnapshot.data();
-              const teamName = userData.team;
-
-              console.log(`User is part of team: ${teamName}`);
-
-              // Fetch goals for the user's team
-              let teamSnapshot = await db.collection('teams').doc(teamName).get();
-              if (teamSnapshot.exists) {
-                  const teamData = teamSnapshot.data();
-                  const goals = teamData.Goals || [];
-
-                  // Populate the select dropdown
-                  selectTaskDropdown.innerHTML = ''; // Clear any existing options
-
-                  if (goals.length > 0) {
-                      goals.forEach((goal) => {
-                          const option = document.createElement('option');
-                          option.value = goal;
-                          option.textContent = goal;
-                          selectTaskDropdown.appendChild(option);
-                      });
-                  } else {
-                      // Handle case when no goals are found
-                      const noGoalsOption = document.createElement('option');
-                      noGoalsOption.value = '';
-                      noGoalsOption.textContent = 'No goals available';
-                      selectTaskDropdown.appendChild(noGoalsOption);
-                  }
-              } else {
-                  console.error("Team document does not exist.");
-              }
-          } else {
-              console.error("User document does not exist.");
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-      } catch (error) {
-          console.error("Error while processing user data:", error);
+          return response.json(); // Parse the JSON response
+        })
+
+        .then((data) => {
+          console.log('Backend Response:', data);
+
+          const teamName = data.teamName;
+          const goals = data.goals;
+  
+          console.log(`Team Name: ${teamName}`);
+          console.log('Goals:', goals);
+
+          selectTaskDropdown.innerHTML = ''; 
+  
+          if (goals.length > 0) {
+            goals.forEach((goal) => {
+              const option = document.createElement('option');
+              option.value = goal.goalId;
+              option.textContent = `${goal.description} (Due: ${goal.dueDate})`;
+              selectTaskDropdown.appendChild(option);
+            });
+          } else {
+            const noGoalsOption = document.createElement('option');
+            noGoalsOption.value = '';
+            noGoalsOption.textContent = 'No goals available';
+            selectTaskDropdown.appendChild(noGoalsOption);
+          }
+          team_name = data.teamName;
+        })
+        .catch((error) => {
+          console.error('Error fetching user data and goals:', error);
+        });
+    } else {
+      console.error('No user logged in');
+    }
+  });
+  
+  
+  ContributionBtn.addEventListener("click", async () => {
+    const goalId = selectTaskDropdown.value; // Selected goal ID
+    const userId = user.uid; // Authenticated user's ID
+    const contributionAmount = ContributionAmount.value; // Amount to contribute, replace with dynamic value if needed
+    try {
+      const response = await fetch(`${SERVER_URL}/addContribution`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({ teamName: team_name, goalId: goalId, userId: userId, contributionAmount: contributionAmount })
+      });
+  
+      const result = await response.json();
+      if (response.ok) {
+        console.log('Contribution added:', result.message);
+      } else {
+        console.error('Error:', result.error);
       }
-  } else {
-      console.error("No user logged in");
-  }
-});
+    } catch (error) {
+      console.error('Error sending contribution:', error);
+    }
+  });
+
+
+
+
+
+
+
+
 
