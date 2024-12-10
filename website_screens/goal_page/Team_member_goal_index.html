@@ -9,24 +9,19 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Team Goals</h1>
-    <div id="goalsList">
-      <!-- Goals will be dynamically loaded here -->
-    </div>
-    <form id="contributionForm">
-      <div class="form-group">
-        <label for="goalSelect">Select Goal:</label>
-        <select id="goalSelect" name="goalSelect" required></select>
-      </div>
-      <div class="form-group">
-        <label for="contributionAmount">Contribution Amount:</label>
-        <input type="number" id="contributionAmount" name="contributionAmount" required>
-      </div>
-      <button type="submit">Add Contribution</button>
-    </form>
-    <button id="goToTeamHome">Go to Team Home</button>
-  </div>
-  <script src="/js/Member_goal_script.js"></script>
+<h1>Team Goals</h1>
+<div id="goalsList">
+    <!-- Goals will be dynamically loaded here -->
+</div>
+<label>Select Goal:</label>
+<select id="goalSelect"></select>
+
+<label>Contribution Amount:</label>
+<input type="number" id="contributionAmount">
+
+<button type="submit" id = "addContributionButton">Add Contribution</button>
+<button id="goToTeamHome">Go to Team Home</button>
+
+  <script src="/js/Team_member_goal_script.js"></script>
 </body>
 </html>
