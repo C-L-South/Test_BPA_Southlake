@@ -287,8 +287,6 @@ app.delete('/declineInvite/:inviteId', async (req, res) => {
 });
 
 
-// Route to set a goal for a team
-// Route to set a goal for a team
 app.post('/setGoal', async (req, res) => {
   const { teamName, goalDescription, target, dueDate } = req.body;
 
@@ -307,14 +305,17 @@ app.post('/setGoal', async (req, res) => {
       return res.status(404).json({ error: 'Team not found.' });
     }
 
-    // Create a new goal object
+    // Generate a unique goal ID
+    const newGoalId = db.collection('teams').doc().id;
+
+    // Create a new goal object without the tags field
     const newGoal = {
-      goalId: db.collection('teams').doc().id, // Generate a unique goal ID
+      goalId: newGoalId,  // Store the generated goal ID
       description: goalDescription,
       target: target,
       dueDate: dueDate,
       progress: 0,  // Initially, the progress is zero
-      remaining: target // Initially, remaining equals target
+      remaining: target, // Initially, remaining equals target
     };
 
     // Update the team document by adding the new goal to the 'Goals' array
@@ -322,7 +323,7 @@ app.post('/setGoal', async (req, res) => {
       Goals: admin.firestore.FieldValue.arrayUnion(newGoal)
     });
 
-    res.status(200).json({ message: 'Goal has been added to the team!' });
+    res.status(200).json({ message: 'Goal has been added to the team!', goalId: newGoalId });
   } catch (error) {
     console.error('Error adding goal to the team:', error);
     res.status(500).json({ error: 'Error adding goal to the team' });
@@ -330,102 +331,128 @@ app.post('/setGoal', async (req, res) => {
 });
 
 
-// Route to get team goals
-app.post('/getTeamGoals', async (req, res) => {
-  const { teamName } = req.body;
 
-  if (!teamName) {
-    return res.status(400).json({ error: 'Team name is required.' });
-  }
-
-  try {
-    const teamDoc = await db.collection('teams').doc(teamName).get();
-    if (!teamDoc.exists) {
-      return res.status(404).json({ error: 'Team not found.' });
-    }
-
-    const teamData = teamDoc.data();
-    const goals = teamData.Goals || [];
-    res.status(200).json({ goals });
-  } catch (error) {
-    console.error('Error fetching team goals:', error);
-    res.status(500).json({ error: 'Failed to retrieve team goals.' });
-  }
-});
-
-
-
-// Route to add contribution to a goal
-// Route to add contribution to a goal
 app.post('/addContribution', async (req, res) => {
-  const { teamName, goalId, contributionAmount } = req.body;
+  const { teamName, goalId, userId, contributionAmount } = req.body;
 
   // Validate input fields
-  if (!teamName || !goalId || !contributionAmount) {
-    return res.status(400).json({ error: 'Team Name, Goal ID, and Contribution Amount are required.' });
+  if (!teamName || !goalId || !userId || !contributionAmount) {
+    return res
+      .status(400)
+      .json({ error: 'Team Name, Goal ID, User ID, and Contribution Amount are required.' });
   }
 
   try {
-    // Fetch the team document
     const teamRef = db.collection('teams').doc(teamName);
-    const teamDoc = await teamRef.get();
 
-    // Check if the team document exists
-    if (!teamDoc.exists) {
+    // Fetch the team document
+    const teamSnapshot = await teamRef.get();
+    if (!teamSnapshot.exists) {
       return res.status(404).json({ error: 'Team not found.' });
     }
 
-    const teamData = teamDoc.data();
+    const teamData = teamSnapshot.data();
     const goals = teamData.Goals || [];
-    
-    // Find the goal to update
-    const goalIndex = goals.findIndex((goal) => goal.goalId === goalId);
+
+    // Find the goal with the matching goalId
+    const goalIndex = goals.findIndex(goal => goal.goalId === goalId);
+
     if (goalIndex === -1) {
       return res.status(404).json({ error: 'Goal not found.' });
     }
 
     const goal = goals[goalIndex];
 
-    // Update goal progress
-    if (contributionAmount > goal.remaining) {
+    const currentProgress = goal.progress || 0;
+    const currentRemaining = goal.remaining || goal.target;
+
+    // Ensure contribution does not exceed the remaining target
+    if (contributionAmount > currentRemaining) {
       return res.status(400).json({ error: 'Contribution amount exceeds the remaining target.' });
     }
 
-    goal.remaining -= contributionAmount; // Decrease remaining target
-    goal.progress = ((goal.target - goal.remaining) / goal.target) * 100; // Update progress percentage
+    // Update progress and remaining
+    const updatedProgress = currentProgress + contributionAmount;
+    const updatedRemaining = currentRemaining - contributionAmount;
+
+    // Initialize or update the submissions object
+    const submissions = goal.submissions || {};
+    submissions[userId] = {
+      contribution: (submissions[userId]?.contribution || 0) + contributionAmount,
+      timestamp: new Date().toISOString(),
+    };
 
     // Update the goal in the goals array
-    goals[goalIndex] = goal;
+    goals[goalIndex] = {
+      ...goal,
+      progress: updatedProgress,
+      remaining: updatedRemaining,
+      submissions: submissions,
+    };
 
-    // Update the team document with the new goals array
+    // Update the team document with the modified goals array
     await teamRef.update({
-      Goals: goals
+      Goals: goals,
     });
 
-    res.status(200).json({ message: 'Contribution added successfully!', updatedGoal: goal });
+    res.status(200).json({ message: 'Contribution added successfully!' });
   } catch (error) {
     console.error('Error adding contribution:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+app.post('/getGoals', async (req, res) => {
+  const { userId } = req.body;
+
+  // Validate input
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required.' });
+  }
+
+  try {
+    // Fetch user data from Firestore
+    const userSnapshot = await db.collection('users').doc(userId).get();
+
+    if (!userSnapshot.exists) {
+      return res.status(404).json({ error: 'User document does not exist.' });
+    }
+
+    const userData = userSnapshot.data();
+    const teamName = userData.team;
+
+    console.log(`User is part of team: ${teamName}`);
+
+    // Fetch team goals
+    const teamSnapshot = await db.collection('teams').doc(teamName).get();
+    if (!teamSnapshot.exists) {
+      return res.status(404).json({ error: 'Team document does not exist.' });
+    }
+
+    const teamData = teamSnapshot.data();
+    const goals = teamData.Goals || [];
+
+    // Format response
+    const formattedGoals = goals.map((goal) => ({
+      goalId: goal.goalId,
+      description: goal.description,
+      dueDate: goal.dueDate,
+      progress: goal.progress || 0,
+      remaining: goal.remaining || 0,
+      target: goal.target,
+    }));
+
+    res.status(200).json({
+      teamName,
+      goals: formattedGoals,
+    });
+  } catch (error) {
+    console.error('Error fetching user data and goals:', error);
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
-
-app.get('/getUserData/:userId', async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-      const userDoc = await db.collection('users').doc(userId).get();
-      if (!userDoc.exists) {
-          return res.status(404).json({ error: 'User not found.' });
-      }
-
-      const userData = userDoc.data();
-      return res.status(200).json({ user: userData });
-  } catch (error) {
-      console.error('Error fetching user data:', error);
-      return res.status(500).json({ error: 'Internal server error.' });
-  }
-});
-
 
 
 // Start the server
