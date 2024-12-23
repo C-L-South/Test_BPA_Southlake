@@ -454,6 +454,33 @@ app.post('/getGoals', async (req, res) => {
   }
 });
 
+app.post("/sendMessage", async (req, res) => {
+  const { sender, teamId, recipient, message } = req.body;
+
+  if (!sender || !teamId || !recipient || !message) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const teamDoc = await db.collection("teams").doc(teamId).get();
+    if (!teamDoc.exists || !teamDoc.data().Members.includes(recipient)) {
+      return res.status(400).json({ error: "Recipient is not a member of the team." });
+    }
+
+    await db.collection("teams").doc(teamId).collection("messages").add({
+      sender: sender,
+      recipient: recipient,
+      message: message,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    res.status(201).json({ message: "Message sent successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+
 
 // Start the server
 const PORT = 3000;
