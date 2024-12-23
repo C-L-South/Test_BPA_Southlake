@@ -13,16 +13,17 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const sendInviteBtn = document.getElementById('sendInviteBtn');
 const inviteEmail = document.getElementById('inviteEmail');
-let user = null;
+
 firebase.auth().onAuthStateChanged((currentUser) => {
 if (currentUser) { 
   
-  const user = currentUser;
+  let user = currentUser;
   db.collection('users').doc(user.uid).get()
     .then((doc) => {
       if (doc.exists) {
         const userData = doc.data();
-        console.log(`Email: ${userData.email}, Role: ${userData.role}, Status : ${userData.status}, Team:${userData.team}`);
+        console.log(`Email: ${userData.email}, Role: ${userData.role}, Status : ${userData.status}`);
+        console.log(userData.team);
         document.getElementById("team name").textContent = userData.team;
         
       } else {
@@ -36,4 +37,33 @@ if (currentUser) {
 
 document.getElementById('goToTeamGoal').addEventListener('click', () => {
   window.location.href = '/website_screens/goal_page/Team_member_goal_index.html';
+});
+
+const messageContainer = document.getElementById("messageContainer");
+
+firebase.auth().onAuthStateChanged((currentUser) => {
+  if (currentUser) {
+    db.collection("users").doc(currentUser.uid).get()
+      .then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+          const teamId = userData.team;
+
+          if (teamId) {
+            db.collection("teams").doc(teamId).collection("messages")
+              .where("recipient", "==", currentUser.email) 
+              .orderBy("timestamp", "asc")
+              .onSnapshot((snapshot) => {
+                messageContainer.innerHTML = "";
+                snapshot.forEach((doc) => {
+                  const messageData = doc.data();
+                  const li = document.createElement("li");
+                  li.textContent = `${messageData.sender}: ${messageData.message}`;
+                  messageContainer.appendChild(li);
+                });
+              });
+          }
+        }
+      })
+  }
 });
