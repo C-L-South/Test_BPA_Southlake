@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f6f6f6;
+    background-image: url('/assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    }
+    .container {
+    width: 600px;
+    height: 800px;
+    background: #ffffff;
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    position: relative;
+    }
+    .header {
+    text-align: left;
+    margin-left: 40px;
+    color: #000000;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    padding: 10px 0;
+    margin-top: 50px;
+    }
+    .subtitle {
+    text-align: left;
+    margin-left: 35px;
+    color: black;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    padding: 0 5px;
+    margin-top: 30px;
+    }
+    .input-field {
+    margin: 20px auto;
+    width: 230px;
+    height: 40px;
+    border-radius: 15px;
+    border: 1px solid #099dff;
+    padding: 0 10px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    .firstname {
+    margin-left: 40px;
+    margin-right: 15px;
+    }
+    .input-fields-wrapper {
+    display: flex;
+    align-items: center;
+    }
+    .email {
+    margin-left: 140px;
+    }
+    .dateinput {
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 20px;
+    margin-left: 40px;
+    height: 40px;
+    width: 230px;
+    border-radius: 15px;
+    border: 1px solid #099dff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 80%;
+    }
+    .emailinput {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 20px;
+    margin-left: 15px;
+    height: 40px;
+    width: 230px;
+    border-radius: 15px;
+    border: 1px solid #099dff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 80%;
+    }
+    .body {
+    margin-top: 40px;
+    }
+    .bodytext {
+    position: absolute;
+    padding-top: 20px;
+    padding-left: 10px;
+    margin: 20px auto;
+    margin-left: 40px;
+    margin-right: 15px;
+    height: 200px;
+    width: 507px;
+    border-radius: 15px;
+    border: 1px solid #099dff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-align: left;
+    resize: none;
+    }
+    .submit {
+    margin: 20px auto;
+    margin-top: 300px;
+    height: 50px;
+    width: 80%;
+    border: none;
+    border-radius: 35px;
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    background-color: #099dff;
+    }
