@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Template</title>
+
+  <link rel="stylesheet" href="/css/Form_template_style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Form Template</div>
+    <div class="subtitle">Name</div>
+    <input type="text" class="input-field firstname" id="firstname" placeholder="First">
+    <input type="text" class="input-field lastname" id="lastname" placeholder="Last">
+    <div class="input-fields-wrapper">
+      <div class="subtitle date">Date of Birth</div>
+      <div class="subtitle email">Email</div>
+    </div>
+    <input type="date" class="dateinput" id="dateinput">
+    <input type="email" class="emailinput" id="email" placeholder="email@example.com">
+    <div class="subtitle body">Body of Text</div>
+    <textarea class="bodytext" id="bodytext" placeholder="This is a Template"></textarea>
+    <button class="submit" id="submitBtn">Submit</button>
+</div>
+
+</body>
+</html>
