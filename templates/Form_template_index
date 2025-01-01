@@ -11,8 +11,14 @@
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
+  <div class="header"></div>
+  <div class="website">Website</div>
+  <button class="buttonone" id="oneBtn">Button One</button>
+  <button class="buttontwo" id="twoBtn">Button Two</button>
+  <button class="buttonthree" id="threeBtn">Button Three</button>
+  <button class="buttonfour" id="fourBtn">Button Four</button>
   <div class="container">
-    <div class="header">Form Template</div>
+    <div class="title">Form Template</div>
     <div class="subtitle">Name</div>
     <input type="text" class="input-field firstname" id="firstname" placeholder="First">
     <input type="text" class="input-field lastname" id="lastname" placeholder="Last">
