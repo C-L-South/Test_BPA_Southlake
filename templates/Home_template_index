@@ -10,16 +10,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header"></div>
-        <div class="website">Website</div>
-        <button class="buttonone" id="oneBtn">Button One</button>
-        <button class="buttontwo" id="twoBtn">Button Two</button>
-        <button class="buttonthree" id="threeBtn">Button Three</button>
-        <button class="buttonfour" id="fourBtn">Button Four</button>
-        <button class="buttonfive" id="fiveBtn">Button Five</button>
-        <div class="smalltext">This is a template</div>
-        <div class="bigtext">This is a template</div>
-    </div>
+    <div class="header"></div>
+    <div class="website">Website</div>
+    <button class="buttonone" id="oneBtn">Button One</button>
+    <button class="buttontwo" id="twoBtn">Button Two</button>
+    <button class="buttonthree" id="threeBtn">Button Three</button>
+    <button class="buttonfour" id="fourBtn">Button Four</button>
+    <button class="buttonfive" id="fiveBtn">Button Five</button>
+    <div class="smalltext">This is a template</div>
+    <div class="bigtext">This is a template</div>
 </body>
 </html>
