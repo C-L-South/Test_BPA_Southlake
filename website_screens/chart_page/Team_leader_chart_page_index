@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contributions Chart</title>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Setting Page</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
-  <h1>Contributions by Goal</h1>
+    <p id="team name"></p>
+    <input type="text" id="goalTitle" placeholder="Goal Title">
+    <input type="text" id="goalDescription" placeholder="Goal Description">
+    <input type="number" id="goalTarget" placeholder="Target Value">
+    <input type="text" id="goalUnits" placeholder="Goal Units">
+    <input type="date" id="goalDueDate" placeholder="Due Date">
+    <button id="setGoalBtn">Set Goal</button>
 
-  <label for="goalSelect">Select a Goal:</label>
-  <select id="goalSelect">
-    <option value="" disabled selected>Please select a goal</option>
-  </select>
-
-  <div id="chartContainer" style="width: 100%; height: 500px;"></div>
-  <script src="/js/Leader_chart_script.js"></script>
+    <script src="/js/Team_leader_goal_script.js"></script>
 </body>
 </html>
