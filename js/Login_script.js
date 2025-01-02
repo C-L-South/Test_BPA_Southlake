@@ -1,33 +1,37 @@
 const firebaseConfig = {
   apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
   authDomain: "bpa-user-info-web-application.firebaseapp.com",
+  databaseURL: "https://bpa-user-info-web-application-default-rtdb.firebaseio.com",
   projectId: "bpa-user-info-web-application",
   storageBucket: "bpa-user-info-web-application.firebasestorage.app",
   messagingSenderId: "374266916055",
   appId: "1:374266916055:web:837b7d9bb130e101a99492",
   measurementId: "G-4V2QYVYVKE"
 };
+
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-const signupBtn = document.getElementById('signupBtn');
-const loginBtn = document.getElementById('loginBtn');
-const usernameField = document.getElementById('username');
-const passwordField = document.getElementById('password');
-const SERVER_URL = 'http://localhost:3000';
-let user = null;
-// Signup
-signupBtn.addEventListener('click', async () => {
-  const email = usernameField.value.trim();
-  const password = passwordField.value.trim();
+// DOM Elements
+const signupButton = document.getElementById('signupBtn');
+const loginButton = document.getElementById('loginBtn');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
 
+// Backend Server URL
+const SERVER_URL = 'http://localhost:3000';
+
+// Signup
+signupButton.addEventListener('click', async () => {
+  const email = usernameInput.value;
+  const password = passwordInput.value;
   if (!email || !password) {
-    alert('Please fill in both fields.');
+    alert('Please provide both email and password.');
     return;
   }
-
-
   try {
+    // Send signup data to the backend server
     const response = await fetch(`${SERVER_URL}/signup`, {
       method: 'POST',
       headers: {
@@ -35,29 +39,24 @@ signupBtn.addEventListener('click', async () => {
       },
       body: JSON.stringify({ email, password }),
     });
-
     const result = await response.json();
-    if (response.ok) {
-      alert(result.message);//if successful, the user data is stored in the firestore now
 
-      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password); //signs in with auth after it created on server
-      user = userCredential.user;
-
-      // Redirect to the appropriate home page
-      window.location.href = '/website_screens/home_page/No_team_home_index.html';
-    } else {
-      alert(`Signup failed: ${result.message}`);
+    if (!response.ok) {
+      throw new Error(result.message || 'Signup failed.');
     }
+    //if successful
+    console.log(result.message);
+    alert('Sign up successful! Please now login with the same information.');
+
   } catch (error) {
-    console.error('Error during signup:', error);
-    alert('An error occurred during signup.');
+    console.error('Signup error:', error);
+    alert('An error occurred during signup. Please try again.');
   }
 });
-
 // Login
-loginBtn.addEventListener('click', async () => {
-  const email = usernameField.value.trim();
-  const password = passwordField.value.trim();
+loginButton.addEventListener('click', async () => {
+  const email = usernameInput.value;
+  const password = passwordInput.value;
 
   if (!email || !password) {
     alert("Please fill in both fields.");
@@ -65,11 +64,9 @@ loginBtn.addEventListener('click', async () => {
   }
 
   try {
-    // Use Firebase Authentication to log in
+    // full auth with password only in frontend
     const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
     const user = userCredential.user;
-
-    // Get the Firebase ID token
     const idToken = await user.getIdToken();
 
     // Send the ID token to the server for verification
@@ -82,18 +79,18 @@ loginBtn.addEventListener('click', async () => {
     });
 
     const result = await response.json();
-    if (response.ok) {
-
-      // Redirect to the appropriate home page based on user status
-      if (result.user.status === 'no team') {
-        window.location.href = '/website_screens/home_page/No_team_home_index.html';
-      } else if (result.user.status === 'team member') {
-        window.location.href = '/website_screens/home_page/Team_member_home_index.html';
-      } else {
-        window.location.href = '/website_screens/home_page/Team_leader_home_index.html';
-      }
+    if (!response.ok) {
+      throw new Error(result.message || 'Login failed.');
+    } 
+    console.log(result.message);
+    alert('Login successful');
+    // Redirect to the appropriate home page based on user status
+    if (result.user.status === 'no team') {
+      window.location.href = '/website_screens/home_page/No_team_home_index.html';
+    } else if (result.user.status === 'team member') {
+      window.location.href = '/website_screens/home_page/Team_member_home_index.html';
     } else {
-      alert(`Login failed: ${result.message}`);
+      window.location.href = '/website_screens/home_page/Team_leader_home_index.html';
     }
   } catch (error) {
     console.error("Login error:", error);
