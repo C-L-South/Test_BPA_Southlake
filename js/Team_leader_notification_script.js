@@ -79,3 +79,23 @@ sendNotificationBtn.addEventListener('click', async () => {
     alert('Error sending notification');
   }
 });
+
+goalSettingBtn.addEventListener('click', function () {
+  window.location.href = '/website_screens/goal_page/Team_leader_goal_index.html';
+});
+goalViewingBtn.addEventListener('click', function () {
+  window.location.href = '/website_screens/chart_page/Team_leader_chart_index.html';
+});
+goalLogBtn.addEventListener('click', function () {
+  window.location.href = '/website_screens/log_page/Team_leader_log_index.html';
+});
+document.getElementById('signOutBtn').addEventListener('click', async () => {
+  try {
+    await firebase.auth().signOut();
+    alert('You have been signed out.');
+    window.location.href = '/website_screens/login_page/login_index.html';
+  } catch (error) {
+    console.error('Error signing out:', error);
+    alert('An error occurred while signing out.');
+  }
+});
