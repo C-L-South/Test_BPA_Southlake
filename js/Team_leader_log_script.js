@@ -14,7 +14,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const SERVER_URL = 'http://localhost:3000';
 const goalLogsContainer = document.getElementById('goalLogs');
+const searchBar = document.getElementById('searchBar');
 let userUid = null;
+let allLogs = [];
 
 let teamName = null;
 firebase.auth().onAuthStateChanged(async (user) => {
@@ -65,9 +67,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
   
       if (!response.ok) {
         throw new Error(result.error || 'Failed to fetch goal logs.');
-      }
-  
-      displayGoalLogs(result.goalLog);
+      } 
+      allLogs = result.goalLog;
+      displayGoalLogs(allLogs); 
     } catch (error) {
       console.error('Error fetching goal logs:', error.message);
       alert('Failed to fetch goal logs.');
@@ -104,3 +106,36 @@ firebase.auth().onAuthStateChanged(async (user) => {
       });
       
   }
+
+  function filterLogs(event) {
+    const searchQuery = event.target.value.toLowerCase();
+      const filteredLogs = allLogs.filter((log) => {
+      const logMessage = log.message.toLowerCase();
+      const logTimestamp = new Date(log.timestamp._seconds * 1000).toLocaleString().toLowerCase();
+      return logMessage.includes(searchQuery) || logTimestamp.includes(searchQuery);
+    });
+  
+    displayGoalLogs(filteredLogs);
+  }
+  
+  searchBar.addEventListener('input', filterLogs);
+
+  goalSettingBtn.addEventListener('click', function () {
+    window.location.href = '/website_screens/goal_page/Team_leader_goal_index.html';
+  });
+  goalViewingBtn.addEventListener('click', function () {
+    window.location.href = '/website_screens/chart_page/Team_leader_chart_index.html';
+  });
+  notificationBtn.addEventListener('click', function () {
+    window.location.href = '/website_screens/notification_page/Team_leader_notification_index.html';
+  });
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    try {
+      await firebase.auth().signOut();
+      alert('You have been signed out.');
+      window.location.href = '/website_screens/login_page/login_index.html';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('An error occurred while signing out.');
+    }
+  });
