@@ -1,0 +1,72 @@
+
+Database Schema
+
+
+
+1. 'Users' (map)
+
+    - UID (string) : users have an unique identifier
+
+        - 'email' (string) : users email
+
+        - 'role' (string) : user is either a customer or an admin
+
+        - 'status' (string) : user can be a team leader, team member, or have no team
+
+        - 'team' (string) : if users have a team, team name will go here
+
+        - 'totalContributions' (number) : used to show team members rank - bronze, silver, gold - based on number of contributions 
+
+
+
+2. 'Teams' (map)
+
+    - Team Name (string) : teams are stored under their names
+
+    - 'Goals' (map) : teams goals are stored here
+
+        - Goal Name (string) : goals are stored under their names
+
+            - 'description' (string) : description of event
+
+            - 'dueDate' (string) : date when the goal is due
+
+            - 'submission' (map) : map of submissions for the goal
+
+                - UID (string): user contributions will be stored under their UID
+
+                    - (number) : user contributions will be added to current number or key will be create 
+
+            - 'target' (number) : target number for the goal
+
+            - 'units' (string) : the units of the target
+
+    - 'Leader' (string) : team leaders email is stored here
+
+    - 'Members' (array) : list of member in team
+
+        - UID : user UID will be listed 
+
+    - 'goalLog' (array) : log of actions done to goals
+
+        - 'message' (string) : each logged action will have a message 
+
+        - 'timestamp' (timestamp) : logged action will have a timetsamp 
+
+    - 'notification' (array) : team notifications are stored here
+
+        - 'message' (string) : each notificiation will have a message 
+
+        - 'timestamp' (timestamp) : notificiation will have a timetsamp 
+
+
+
+3. 'Invites' (map)
+
+    - inviteID (string) : each invite will have their own identifier
+
+        - 'teamName' (string) : team invite is from
+
+        - 'invitedBy' (string) : user UID of team leader
+
+        - 'invitedTo' (string) : recievers Email for invite
