@@ -113,6 +113,8 @@ body {
     box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     z-index: 1;
+    display: flex;
+    justify-content: space-between;
 }
 .sendinvite {
     position: absolute;
@@ -293,6 +295,8 @@ body {
         box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
         border-radius: 10px;
         z-index: 1;
+        display: flex;
+        justify-content: space-between;
     }
     .sendinvite {
         position: absolute;
@@ -473,6 +477,8 @@ body {
         box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
         border-radius: 10px;
         z-index: 1;
+        display: flex;
+        justify-content: space-between;
     }
     .sendinvite {
         position: absolute;
@@ -654,6 +660,8 @@ body {
         box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
         border-radius: 10px;
         z-index: 1;
+        display: flex;
+        justify-content: space-between;
     }
     .sendinvite {
         position: absolute;
@@ -834,6 +842,8 @@ body {
         box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
         border-radius: 10px;
         z-index: 1;
+        display: flex;
+        justify-content: space-between;
     }
     .sendinvite {
         position: absolute;
