@@ -50,8 +50,6 @@ body {
 }
 .notifications {
     position: fixed;
-    display: flex;
-    justify-content: center;
     background: none;
     border: rgb(255, 255, 255);
     border-radius: 15px;
