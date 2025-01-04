@@ -56,8 +56,8 @@ const displayInvites = (invites) => {
     const inviteElement = document.createElement('div');
     inviteElement.innerHTML = `
       <p>Team Name: ${invite.teamName}</p>
-      <button onclick="acceptInvite('${invite.id}')">Accept</button>
-      <button onclick="declineInvite('${invite.id}')">Decline</button>
+        <button onclick="acceptInvite('${invite.id}')" class = "acceptBtn" >Accept</button>
+        <button onclick="declineInvite('${invite.id}')" class = "declineBtn" >Decline</button>
     `;
     invitesDiv.appendChild(inviteElement);
   });
