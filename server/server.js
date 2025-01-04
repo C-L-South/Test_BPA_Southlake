@@ -157,7 +157,7 @@ app.post('/sendInvite', async (req, res) => {
     const inviteRef = await db.collection('Invites').add({
       teamName,
       invitedBy,
-      invitedTo,
+      invitedTo
     });
 
     res.status(201).json({ message: 'Invite sent successfully.', inviteId: inviteRef.id });
@@ -228,10 +228,10 @@ app.post('/acceptInvite', async (req, res) => {
   }
 });
 app.post('/declineInvite', async (req, res) => {
-  const { inviteId } = req.params;
+  const { inviteId } = req.body;
 
   try {
-    const inviteRef = db.collection('invites').doc(inviteId);
+    const inviteRef = db.collection('Invites').doc(inviteId);
     // Delete the invite
     await inviteRef.delete();
 
@@ -600,6 +600,99 @@ app.post('/getNotifications', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
+//for admin
+app.post('/admin/addUser', async (req, res) => {
+  const { email, password, role } = req.body;
+
+  if (!email || !password || !role) {
+    return res.status(400).json({ error: 'Email, password, and role are required.' });
+  }
+
+  try {
+    // Create the user in Firebase Authentication
+    const userRecord = await admin.auth().createUser({
+      email,
+      password, // Add password for authentication
+    });
+
+    // Save user details in Firestore
+    await db.collection('Users').doc(userRecord.uid).set({
+      email: email,
+      role: role,
+      status: 'no team',
+      team: 'no team',
+      totalContributions: 0 // Default status
+    });
+
+    res.status(201).json({ message: 'User added successfully.' });
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: 'Failed to add user.' });
+  }
+});
+app.post('/admin/deleteUser', async (req, res) => {
+  const { Email } = req.body;
+  try {
+    // Find the user in Firestore
+    const userSnapshot = await db.collection('Users').where('email', '==', Email).get();
+
+    if (userSnapshot.empty) {
+      console.error('Error deleting user: User not found for email:', Email);
+      return res.status(404).json({ error: 'User not found for the provided email.' });
+    }
+
+    // Get the user ID
+    const userDoc = userSnapshot.docs[0];
+    const userUid = userDoc.id;
+
+    // Delete the user from Firestore
+    await db.collection('Users').doc(userUid).delete();
+
+    // Delete the user from Firebase Authentication
+    await admin.auth().deleteUser(userUid);
+    res.status(200).json({ message: 'User deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user.' });
+  }
+});
+app.post('/admin/deleteTeam', async (req, res) => {
+  const { teamName } = req.body;
+  try {
+    await db.collection('Teams').doc(teamName).delete();
+    res.status(200).json({ message: 'Team deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting team:', error);
+    res.status(500).json({ error: 'Failed to delete team.' });
+  }
+});
+
+app.get('/admin/reports', async (req, res) => {
+  try {
+    const usersSnapshot = await db.collection('Users').get();
+    const teamsSnapshot = await db.collection('Teams').get();
+
+    // Map through users
+    const users = usersSnapshot.docs.map(doc => ({
+      email: doc.data().email,
+      role: doc.data().role,
+      status: doc.data().status,
+      team: doc.data().team
+    }));
+
+    // Map through teams and use `doc.id` as the team name
+    const teams = teamsSnapshot.docs.map(doc => ({
+      name: doc.id, // Use the document ID as the team name
+      Leader: doc.data().Leader,
+    }));
+
+    res.status(200).json({ users, teams });
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
 
 // Start the server
 const PORT = 3000;
