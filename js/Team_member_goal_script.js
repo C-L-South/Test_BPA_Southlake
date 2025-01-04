@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => { 
 const firebaseConfig = {
   apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
   authDomain: "bpa-user-info-web-application.firebaseapp.com",
@@ -19,6 +20,11 @@ const firebaseConfig = {
   const goalDescription = document.getElementById('goalDescription');
   const goalDueDate = document.getElementById('goalDueDate');
   const goalTarget = document.getElementById('goalTarget');
+  const signOutBtn = document.getElementById('signOutBtn');
+  const TeamGoalsBtn = document.getElementById('goToTeamGoal');
+
+const notificationBtn = document.getElementById('notificationBtn');
+const goalViewingBtn = document.getElementById('goalViewingBtn');
   let userUid = null;
   let teamName = null;
   let userEmail = null;
@@ -236,9 +242,29 @@ const firebaseConfig = {
 
 
 
-
-
-
+  TeamGoalsBtn.addEventListener('click', () => {
+    window.location.href = '/website_screens/goal_page/Team_member_goal_index.html';
+  });
+  notificationBtn.addEventListener('click', function () {
+    window.location.href = '/website_screens/notification_page/Team_member_notification_index.html';
+  });
+  goalViewingBtn.addEventListener('click', function () {
+    window.location.href = '/website_screens/chart_page/Team_member_chart_index.html';
+  });
+  
+  signOutBtn.addEventListener('click', async () => {
+    try {
+      await firebase.auth().signOut();
+      alert('You have been signed out.');
+      // Redirect to the login page or any other page
+      window.location.href = '/website_screens/login_page/login_index.html';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('An error occurred while signing out.');
+    }
+  });
+  
+});
 
 
 
