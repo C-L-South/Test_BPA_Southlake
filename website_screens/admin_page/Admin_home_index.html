@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <div id="reports"></div>
+
+
+    <h2>Delete User</h2>
+    <input type="text" id="deleteUserEmail" placeholder="User Email">
+    <button id="deleteUserBtn">Delete User</button>
+
+    <h2>Delete Team</h2>
+    <input type="text" id="deleteTeamName" placeholder="Team Name">
+    <button id="deleteTeamBtn">Delete Team</button>
+
+    <h2>Add User</h2>
+    <input type="email" id="addUserEmail" placeholder="User Email">
+    <input type="password" id="addUserPassword" placeholder="User Password">
+    <select id="addUserRole">
+      <option value="customer">Customer</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button id="addUserBtn">Add User</button>
+
+
+  <script src="/js/admin_home_script.js"></script>
+</body>
+</html>
