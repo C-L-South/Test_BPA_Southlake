@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => { 
 const firebaseConfig = {
     apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
     authDomain: "bpa-user-info-web-application.firebaseapp.com",
@@ -107,18 +108,33 @@ firebase.auth().onAuthStateChanged(async (user) => {
       
   }
 
-  function filterLogs(event) {
-    const searchQuery = event.target.value.toLowerCase();
-      const filteredLogs = allLogs.filter((log) => {
+
+  
+  searchBar.addEventListener('input', () => {
+
+    const searchText = searchBar.value.toLowerCase();
+  
+
+    const matchingLogs = [];
+  
+    // Loop through each log in the list of all logs
+    for (const log of allLogs) {
+
       const logMessage = log.message.toLowerCase();
-      const logTimestamp = new Date(log.timestamp._seconds * 1000).toLocaleString().toLowerCase();
-      return logMessage.includes(searchQuery) || logTimestamp.includes(searchQuery);
-    });
   
-    displayGoalLogs(filteredLogs);
-  }
+      // Convert the timestamp to a readable string and lowercase it
+      const logTime = new Date(log.timestamp._seconds * 1000)
+        .toLocaleString()
+        .toLowerCase();
   
-  searchBar.addEventListener('input', filterLogs);
+      if (logMessage.includes(searchText) || logTime.includes(searchText)) {
+        matchingLogs.push(log); 
+      }
+    }
+  
+    // Display the filtered logs
+    displayGoalLogs(matchingLogs);
+  });
 
   goalSettingBtn.addEventListener('click', function () {
     window.location.href = '/website_screens/goal_page/Team_leader_goal_index.html';
@@ -139,3 +155,4 @@ firebase.auth().onAuthStateChanged(async (user) => {
       alert('An error occurred while signing out.');
     }
   });
+});
