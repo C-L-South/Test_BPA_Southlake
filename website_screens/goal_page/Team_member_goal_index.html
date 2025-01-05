@@ -4,29 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Team Member Goal Page</title>
+
+  <link rel="stylesheet" href="/css/Team_member_goal_style.css">
+
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<h1>Team Goals</h1>
-<div id="goalsList">
-    <!-- Goals will be dynamically loaded here -->
+  <div class="header"></div>
+  <div class="website" id="HabitTracker">Habit Tracker</div>
+  <button class="teamgoal" id="goToTeamGoal">Visit Team Goals</button>
+  <button class="signout" id="signOutBtn">Sign Out</button>
+  <button class="notifications" id="notificationBtn">View Notifications</button>
+  <button class="goalviewing" id="goalViewingBtn">View Goals</button>
+<div class="container">
+  <h1 class="title">Team Goals</h1>
+  <div id="goalsList">
+      <!-- Goals will be dynamically loaded here -->
+  </div>
+  <label class="selecttitle">Select Goal:</label>
+  <select class="selectbox" id="goalSelect"></select>
+  <br>
+  <p class="descriptiontext" id="goalDescription">description goes here</p>
+  <br>
+  <p class="duedatetext" id="goalDueDate">Due date goes here</p>
+  <br>
+  <p class="targettext" id="goalTarget">target goes here</p>
+  <br>
+  <label class="contributiontitle">Contribution Amount:</label>
+  <input class="contributionamount" type="number" id="contributionAmount">
+  <br><br>
+  <button class="submit" type="submit" id = "addContributionButton">Add Contribution</button>
 </div>
-<label>Select Goal:</label>
-<select id="goalSelect"></select>
-<br>
-<p id="goalDescription">description goes here</p>
-<br>
-<p id="goalDueDate">Due date goes here</p>
-<br>
-<p id="goalTarget">target goes here</p>
-<br>
-<label>Contribution Amount:</label>
-<input type="number" id="contributionAmount">
-<br><br>
-<button type="submit" id = "addContributionButton">Add Contribution</button>
-
   <script src="/js/Team_member_goal_script.js"></script>
 </body>
 </html>
