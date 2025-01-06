@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => { 
-const firebaseConfig = {
+  const firebaseConfig = {
     apiKey: "AIzaSyCtmIBT--YMJrlXD-de2KqVIwYUtIhbnMg",
     authDomain: "bpa-user-info-web-application.firebaseapp.com",
     databaseURL: "https://bpa-user-info-web-application-default-rtdb.firebaseio.com",
@@ -10,18 +10,22 @@ const firebaseConfig = {
     measurementId: "G-4V2QYVYVKE"
   };
   
-firebase.initializeApp(firebaseConfig);
-const SERVER_URL = 'http://localhost:3000';
-const auth = firebase.auth();
-const db = firebase.firestore();
-let userUid = null;
-let teamName = null;
-const signOutBtn = document.getElementById('signOutBtn');
-const TeamGoalsBtn = document.getElementById('goToTeamGoal');
+  firebase.initializeApp(firebaseConfig);
 
-const notificationBtn = document.getElementById('notificationBtn');
-const goalViewingBtn = document.getElementById('goalViewingBtn');
-firebase.auth().onAuthStateChanged(async (user) => {
+  const SERVER_URL = 'http://localhost:3000';
+  let userUid = null;
+  let teamName = null;
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const Rank = document.getElementById('rank');
+  const TeamGoalsBtn = document.getElementById('goToTeamGoal');
+  const HabitTracker = document.getElementById('HabitTracker');
+  const notificationBtn = document.getElementById('notificationBtn');
+  const goalViewingBtn = document.getElementById('goalViewingBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+
+  firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       try {
         // Get the user's ID token
@@ -38,69 +42,118 @@ firebase.auth().onAuthStateChanged(async (user) => {
         if (!response.ok) {
           throw new Error('Failed to fetch user info.');
         }
-  
-  
-        console.log('User info got:', result.user);
+        userUid = result.user.uid;
         teamName = result.user.team;
-        userUid=result.user.uid;
-        fetchAndDisplayNotifications();
-        console.log('userUid: ', userUid);
+        console.log('User info got:', result.user);
+  
+        //gameification
+        if(result.user.totalContributions >= 50){
+          Rank.textContent = 'Gold Rank';
+        }
+        else if(result.user.totalContributions >= 10){
+          Rank.textContent = 'Silver Rank';
+        }
+        else if(result.user.totalContributions >= 0){
+          Rank.textContent = 'Bronze Rank';
+        }
+  
+  
+  
+        updateExpiredGoals(teamName);
       } catch (error) {
         console.error('Error retrieving user info:', error);
         alert('An error occurred while retrieving user info.');
       }
     }
   });
-// Fetch notifications for a given team
-async function fetchAndDisplayNotifications() {
   
-  
+  async function updateExpiredGoals(teamName) {
     try {
-      // Send request to the backend
-      const response = await fetch(`${SERVER_URL}/getNotifications`, {
+  
+      // Fetch all goals for the team
+      const goalsResponse = await fetch(`${SERVER_URL}/getGoals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ teamName: teamName }),
+        body: JSON.stringify({ userUid : userUid }),
       });
   
-      const result = await response.json();
+      const goalsData = await goalsResponse.json();
   
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to fetch notifications.');
+      if (!goalsResponse.ok) {
+        throw new Error(goalsData.error || 'Failed to fetch goals.');
       }
+      const goalTitles = goalsData.goalTitles; // Array of goal titles
+      //get new date
+      const currentDate = new Date();
   
-      // Clear the container and display notifications
-      notificationsContainer = document.getElementById('notificationsContainer');
-
-      notificationsContainer.innerHTML = '';
-      const notifications = result.notifications;
   
-      if (notifications.length === 0) {
-        notificationsContainer.innerHTML = '<p>No notifications</p>';
-        return;
+  
+      for (const goalTitle of goalTitles) { //loop over all goals
+        // Fetch goal details
+        const goalInfoResponse = await fetch(`${SERVER_URL}/GoalInfo`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamName: teamName, goalName: goalTitle }),
+        });
+  
+        const goalInfo = await goalInfoResponse.json();
+  
+        if (!goalInfoResponse.ok) {
+          throw new Error(`Failed to fetch info for goal "${goalTitle}". `);
+        }
+  
+  
+  
+        //turn due date into a Date object
+        const goalDueDate = new Date(goalInfo.goalInfo.dueDate);
+        if (goalDueDate < currentDate) {
+          // Delete the expired goal
+          const deleteResponse = await fetch(`${SERVER_URL}/goalDelete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ teamName, goalTitle }),
+          });
+  
+          const deleteResult = await deleteResponse.json();
+  
+          if (!deleteResponse.ok) {
+            throw new Error(`Failed to delete goal "${goalTitle}": ${deleteResult.error}`);
+          }
+  
+          console.log(`Goal "${goalTitle}" deleted successfully.`);
+  
+  
+  
+          // Log the deletion
+          const logResponse = await fetch(`${SERVER_URL}/updateGoalLog`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              teamName,
+              Message: `Goal "${goalTitle}" was deleted due to expiration.`,
+            }),
+          });
+  
+          const logResult = await logResponse.json();
+  
+          if (!logResponse.ok) {
+            throw new Error(`Failed to log deletion of goal "${goalTitle}": ${logResult.error}`);
+          }
+  
+          console.log(`Deletion of goal "${goalTitle}" logged successfully.`);
+        }
       }
-  
-      notifications.forEach(notification => {
-        const notificationElement = document.createElement('div');
-        const message = document.createElement('p');
-        message.textContent = `${notification.message}`;
-  
-        const timestamp = document.createElement('p');
-        const date = new Date(notification.timestamp._seconds * 1000);
-        timestamp.textContent = `${date}`;
-  
-        notificationElement.appendChild(message);
-        notificationElement.appendChild(timestamp);
-        notificationsContainer.appendChild(notificationElement);
-      });
+      console.log('goal checked successfully');
     } catch (error) {
-      console.error('Error fetching notifications:', error);
-      alert('Error fetching notifications')
+      console.error('Error updating expired goals:', error.message);
     }
   }
+  });
 
-
-
+  HabitTracker.addEventListener('click',() => {
+    window.location.href = '/website_screens/goal_page/Team_member_home_index.html';
+  });
+  
   TeamGoalsBtn.addEventListener('click', () => {
     window.location.href = '/website_screens/goal_page/Team_member_goal_index.html';
   });
@@ -122,5 +175,4 @@ async function fetchAndDisplayNotifications() {
       alert('An error occurred while signing out.');
     }
   });
-  
-});
+
