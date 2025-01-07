@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let teamName = null;
 
   const Rank = document.getElementById('rank');
+  Rank.textContent = 'here';
   const TeamGoalsBtn = document.getElementById('goToTeamGoal');
   const HabitTracker = document.getElementById('HabitTracker');
   const notificationBtn = document.getElementById('notificationBtn');
