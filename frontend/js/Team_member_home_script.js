@@ -80,11 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Gamification logic
         if (result.user.totalContributions >= 50) {
+          console.log('here1');
           Rank.textContent = 'Gold Rank';
         } else if (result.user.totalContributions >= 10) {
           Rank.textContent = 'Silver Rank';
+          console.log('here2');
         } else if (result.user.totalContributions >= 0) {
           Rank.textContent = 'Bronze Rank';
+          console.log('here3');
         }
 
         updateExpiredGoals(userUid, teamName);
