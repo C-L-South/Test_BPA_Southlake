@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
 
-  const SERVER_URL = 'http://localhost:3000';
+  const SERVER_URL = 'https://test-bpa-southlake-server3.onrender.com';
 
 
   signupButton.addEventListener('click', async () => {
