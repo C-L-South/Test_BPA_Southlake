@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const signOutBtn = document.getElementById('signOutBtn');
 
 
-  console.log('rank' + Rank);
+  console.log('rank' + Rank.textContent);
   Rank.textContent = 'Here';
 
   // Event Listeners
