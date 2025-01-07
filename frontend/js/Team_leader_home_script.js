@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     try {
       if(userUid){
-        const response = await fetch('http://localhost:3000/sendInvite', {
+        const response = await fetch(`${SERVER_URL}/sendInvite`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ teamName: teamName, invitedTo: emailToInvite, invitedBy:userUid }),
