@@ -16,6 +16,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the Cody Website API!');
+});
 
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
