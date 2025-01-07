@@ -11,9 +11,9 @@ const firebaseConfig = {
   };
 
 firebase.initializeApp(firebaseConfig);
-const SERVER_URL = 'http://localhost:3000';
-const auth = firebase.auth();
-const db = firebase.firestore();
+const SERVER_URL = 'https://test-bpa-southlake-server3.onrender.com';
+console.log('server : ' + SERVER_URL);
+
 let userUid = null;
 let teamName = null;
 const signOutBtn = document.getElementById('signOutBtn');
