@@ -71,3 +71,71 @@ body {
     .signup-button {
     background: #099dff;
     }
+    .title {
+    position: absolute;
+    top: 3%;
+    left: 2%;
+    font-size: 20px;
+    }
+    .names {
+    position: absolute;
+    top: 8%;
+    left: 2%;
+    font-size: 20px;
+    }
+    @media (max-width: 600px) {
+        .title {
+            position: absolute;
+            top: 3%;
+            left: 2%;
+            font-size: 20px;
+            }
+            .names {
+            position: absolute;
+            top: 8%;
+            left: 2%;
+            font-size: 20px;
+            }
+    }
+    @media (min-width: 601px) and (max-width: 768px) {
+        .title {
+            position: absolute;
+            top: 3%;
+            left: 2%;
+            font-size: 20px;
+            }
+            .names {
+            position: absolute;
+            top: 8%;
+            left: 2%;
+            font-size: 20px;
+            }
+    }
+    @media (min-width: 769px) and (max-width: 992px) {
+        .title {
+            position: absolute;
+            top: 3%;
+            left: 2%;
+            font-size: 20px;
+            }
+            .names {
+            position: absolute;
+            top: 8%;
+            left: 2%;
+            font-size: 20px;
+            }
+    }
+    @media (min-width: 993px) and (max-width: 1200) {
+        .title {
+            position: absolute;
+            top: 3%;
+            left: 2%;
+            font-size: 20px;
+            }
+            .names {
+            position: absolute;
+            top: 8%;
+            left: 2%;
+            font-size: 20px;
+            }
+    }
