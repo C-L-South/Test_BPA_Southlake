@@ -23,17 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const goalViewingBtn = document.getElementById('goalViewingBtn');
   const signOutBtn = document.getElementById('signOutBtn');
 
-  if (!Rank || !TeamGoalsBtn || !HabitTracker || !notificationBtn || !goalViewingBtn || !signOutBtn) {
-    console.error('One or more DOM elements could not be found. Check your HTML ids.');
-    return;
-  }
 
-  // Debugging logs
-  console.log('server : ' + SERVER_URL);
-  console.log('Rank element:', Rank);
-  console.log('TeamGoalsBtn element:', TeamGoalsBtn);
-
-  // Initialize rank text
+  console.log('rank' + Rank);
   Rank.textContent = 'Here';
 
   // Event Listeners
