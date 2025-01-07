@@ -24,8 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const signOutBtn = document.getElementById('signOutBtn');
 
 
-  console.log('rank' + Rank.textContent);
-  Rank.textContent = 'Here';
 
   // Event Listeners
   HabitTracker.addEventListener('click', () => {
@@ -80,14 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Gamification logic
         if (result.user.totalContributions >= 50) {
-          console.log('here1');
-          Rank.textContent = 'Gold Rank';
+
+          Rank.textContent = 'Your rank is Gold Rank';
         } else if (result.user.totalContributions >= 10) {
-          Rank.textContent = 'Silver Rank';
-          console.log('here2');
+          Rank.textContent = 'Your rank is Silver Rank';
+
         } else if (result.user.totalContributions >= 0) {
-          Rank.textContent = 'Bronze Rank';
-          console.log('here3');
+          Rank.textContent = 'Your rank is Bronze Rank';
+
         }
 
         updateExpiredGoals(userUid, teamName);
