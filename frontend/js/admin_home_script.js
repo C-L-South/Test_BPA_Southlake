@@ -201,6 +201,17 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Failed to add user.');
     }
   });
+    signOutBtn.addEventListener('click', async () => {
+    try {
+      await firebase.auth().signOut();
+      alert('You have been signed out.');
+      // Redirect to the login page 
+      window.location.href = '/website_screens/login_page/login_index.html';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('An error occurred while signing out.');
+    }
+  });
   
 });
 
