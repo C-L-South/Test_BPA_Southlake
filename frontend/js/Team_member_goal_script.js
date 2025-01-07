@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
     firebase.initializeApp(firebaseConfig);
 
-    const SERVER_URL = 'http://localhost:3000';
+    const SERVER_URL = 'https://test-bpa-southlake-server3.onrender.com';
+    console.log('server : ' + SERVER_URL);
     let userUid = null;
     let teamName = null;
     let userEmail = null;
