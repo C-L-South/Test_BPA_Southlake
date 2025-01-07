@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('password');
 
   const SERVER_URL = 'https://test-bpa-southlake-server3.onrender.com';
-
+  console.log('server : ' + SERVER_URL);
 
   signupButton.addEventListener('click', async () => {
 
