@@ -17,15 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let userUid = null;
   let teamName = null;
 
-  const auth = firebase.auth();
-  const db = firebase.firestore();
   const Rank = document.getElementById('rank');
   const TeamGoalsBtn = document.getElementById('goToTeamGoal');
   const HabitTracker = document.getElementById('HabitTracker');
   const notificationBtn = document.getElementById('notificationBtn');
   const goalViewingBtn = document.getElementById('goalViewingBtn');
   const signOutBtn = document.getElementById('signOutBtn');
-  
+  console.log('rank: ' + Rank);
+  console.log('TeamGoalBtn: ' + TeamGoalsBtn);
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       try {
