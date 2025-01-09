@@ -82,6 +82,7 @@ async function fetchAndDisplayNotifications() {
       notificationPlaceholder.innerHTML = '';
       notifications.forEach(notification => {
         const notificationElement = document.createElement('div');
+        notificationElement.classList.add('notification');
         const message = document.createElement('p');
         message.textContent = `${notification.message}`;
 
