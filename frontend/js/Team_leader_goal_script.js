@@ -121,7 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
           alert("You need to be logged in as a team leader to set a goal.");
       }
   });
-  
+    HabitTracker.addEventListener('click',() => {
+    window.location.href = '/website_screens/goal_page/Team_leader_home_index.html';
+  });
   goalSettingBtn.addEventListener('click', function () {
     window.location.href = '/website_screens/goal_page/Team_leader_goal_index.html';
   });
