@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const notificationBtn = document.getElementById('notificationBtn');
   const signOutBtn = document.getElementById('signOutBtn');
   const goalSelect = document.getElementById('goalSelect');
+  const HabitTracker = document.getElementById('HabitTracker');
   const chartContainer = document.getElementById('chartContainer');
 
   google.charts.load('current', { packages: ['corechart'] });
