@@ -115,6 +115,14 @@ body {
     z-index: 1;
     display: flex;
     justify-content: center;
+    overflow: auto;
+}
+.notificationPlaceholder {
+    margin-top: 15%;
+}
+.notification {
+    width: auto;
+    font-size: 15px;
 }
 @media (max-width: 600px) {
     body {
