@@ -90,7 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  
+    HabitTracker.addEventListener('click',() => {
+    window.location.href = '/website_screens/goal_page/Team_leader_home_index.html';
+  });
   goalSettingBtn.addEventListener('click', function () {
       window.location.href = '/website_screens/goal_page/Team_leader_goal_index.html';
     });
