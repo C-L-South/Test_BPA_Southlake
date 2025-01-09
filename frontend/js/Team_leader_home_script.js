@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const goalLogBtn = document.getElementById('goalLogBtn');
   const notificationBtn = document.getElementById('notificationBtn');
   const signOutBtn = document.getElementById('signOutBtn');
-
+  const textTeamNameBox = document.getElementById('text');
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       try {
@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('User info got:', result.user);
         userUid = result.user.uid;
         teamName = result.user.team;
+        textTeamNameBox.textContent = 'You are the team leader of ' + teamName;
         updateExpiredGoals(teamName);
         console.log('userUid: ', userUid);
       } catch (error) {
