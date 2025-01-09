@@ -27,10 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const goalDueDate = document.getElementById('goalDueDate');
     const goalTarget = document.getElementById('goalTarget');
     const signOutBtn = document.getElementById('signOutBtn');
-    const HabitTracker = document.getElementById('HabitTracker');  
     const TeamGoalsBtn = document.getElementById('goToTeamGoal');
     const notificationBtn = document.getElementById('notificationBtn');
     const goalViewingBtn = document.getElementById('goalViewingBtn');
+    const HabitTracker = document.getElementById('HabitTracker');  
 
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
@@ -240,9 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
   
-        HabitTracker.addEventListener('click',() => {
-    window.location.href = '/website_screens/home_page/Team_member_home_index.html';
-  });
+    HabitTracker.addEventListener('click',() => {
+      window.location.href = '/website_screens/home_page/Team_member_home_index.html';
+    });
     TeamGoalsBtn.addEventListener('click', () => {
       window.location.href = '/website_screens/goal_page/Team_member_goal_index.html';
     });
