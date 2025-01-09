@@ -99,6 +99,9 @@ async function fetchAndDisplayNotifications() {
       alert('Error fetching notifications')
     }
   }
+  HabitTracker.addEventListener('click',() => {
+    window.location.href = '/website_screens/goal_page/Team_member_home_index.html';
+  });
   TeamGoalsBtn.addEventListener('click', () => {
     window.location.href = '/website_screens/goal_page/Team_member_goal_index.html';
   });
