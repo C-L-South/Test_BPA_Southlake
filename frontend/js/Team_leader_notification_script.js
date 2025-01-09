@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const goalLogBtn = document.getElementById('goalLogBtn');
   const notificationBtn = document.getElementById('notificationBtn');
   const signOutBtn = document.getElementById('signOutBtn');
+  const HabitTracker = document.getElementById('HabitTracker');
   const messageInput = document.getElementById('message');
   const sendNotificationBtn = document.getElementById('sendNotificationBtn');
   console.log('the sendNotif is '+ document.getElementById('sendNotificationBtn'))
