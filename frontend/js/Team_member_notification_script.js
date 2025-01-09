@@ -19,6 +19,7 @@ let teamName = null;
 const signOutBtn = document.getElementById('signOutBtn');
 const TeamGoalsBtn = document.getElementById('goToTeamGoal');
 const notificationsContainer = document.getElementById('notificationsContainer');
+const HabitTracker = document.getElementById('HabitTracker');
 const notificationPlaceholder = document.getElementById('notificationPlaceholder');
 const notificationBtn = document.getElementById('notificationBtn');
 const goalViewingBtn = document.getElementById('goalViewingBtn');
