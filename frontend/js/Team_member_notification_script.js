@@ -72,7 +72,6 @@ async function fetchAndDisplayNotifications() {
       // Clear the container and display notifications
       notificationsContainer = document.getElementById('notificationsContainer');
 
-      notificationsContainer.innerHTML = '';
       const notifications = result.notifications;
 
       if (notifications.length === 0) {
