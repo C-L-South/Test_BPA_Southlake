@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const db = firebase.firestore();
   const goalLogsContainer = document.getElementById('goalLogs');
   const searchBar = document.getElementById('searchBar');
+  const HabitTracker = document.getElementById('HabitTracker');
 
   firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
