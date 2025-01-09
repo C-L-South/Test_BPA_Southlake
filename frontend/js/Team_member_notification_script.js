@@ -18,7 +18,8 @@ let userUid = null;
 let teamName = null;
 const signOutBtn = document.getElementById('signOutBtn');
 const TeamGoalsBtn = document.getElementById('goToTeamGoal');
-
+const notificationsContainer = document.getElementById('notificationsContainer');
+const notificationPlaceholder = document.getElementById('notificationPlaceholder');
 const notificationBtn = document.getElementById('notificationBtn');
 const goalViewingBtn = document.getElementById('goalViewingBtn');
 firebase.auth().onAuthStateChanged(async (user) => {
@@ -69,16 +70,15 @@ async function fetchAndDisplayNotifications() {
         throw new Error(result.error || 'Failed to fetch notifications.');
       }
 
-      // Clear the container and display notifications
-      notificationsContainer = document.getElementById('notificationsContainer');
+
 
       const notifications = result.notifications;
 
       if (notifications.length === 0) {
-        notificationsContainer.innerHTML = '<p>No notifications</p>';
+        notificationPlaceholder.innerHTML = '<p>No notifications</p>';
         return;
       }
-
+      notificationPlaceholder.innerHTML = '';
       notifications.forEach(notification => {
         const notificationElement = document.createElement('div');
         const message = document.createElement('p');
@@ -90,7 +90,7 @@ async function fetchAndDisplayNotifications() {
 
         notificationElement.appendChild(message);
         notificationElement.appendChild(timestamp);
-        notificationsContainer.appendChild(notificationElement);
+        notificationPlaceholder.appendChild(notificationElement);
       });
     } catch (error) {
       console.error('Error fetching notifications:', error);
