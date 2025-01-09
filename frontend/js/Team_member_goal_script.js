@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const goalDueDate = document.getElementById('goalDueDate');
     const goalTarget = document.getElementById('goalTarget');
     const signOutBtn = document.getElementById('signOutBtn');
+    const HabitTracker = document.getElementById('HabitTracker');  
     const TeamGoalsBtn = document.getElementById('goToTeamGoal');
     const notificationBtn = document.getElementById('notificationBtn');
     const goalViewingBtn = document.getElementById('goalViewingBtn');
