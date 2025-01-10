@@ -41,7 +41,7 @@ app.post('/signup', async (req, res) => {
     res.status(201).json({ message: 'Signup successful.', userId: userRecord.uid });
   } catch (error) {
     //internal server error
-    console.error('Error creating user:', error);
+    .error('Error creating user:', error);
     res.status(500).json({ message: error });
   }
 });
@@ -406,8 +406,7 @@ app.post('/addContribution', async (req, res) => {
 });
 app.post('/getContributions', async (req, res) => {
   const { teamName, goalTitle } = req.body;
-  console.log('Team Name:', teamName);
-  console.log('Goal Title:', goalTitle);
+
   try {
  
     const teamRef = db.collection('Teams').doc(teamName);
