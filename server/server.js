@@ -406,8 +406,6 @@ app.post('/addContribution', async (req, res) => {
 });
 app.post('/getContributions', async (req, res) => {
   const { teamName, goalTitle } = req.body;
-  console.log('Team Name:', teamName);
-  console.log('Goal Title:', goalTitle);
   try {
  
     const teamRef = db.collection('Teams').doc(teamName);
