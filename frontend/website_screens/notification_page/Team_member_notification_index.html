@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification</title>
+
+  <link rel="stylesheet" href="/css/Team_member_notification_style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+  <script src = "/js/Team_member_notification_script.js"></script>
+</head>
+<body>
+  <div class="header"></div>
+  <div class="website" id="HabitTracker">Habit Tracker</div>
+  <button class="teamgoal" id="goToTeamGoal">Visit Team Goals</button>
+  <button class="signout" id="signOutBtn">Sign Out</button>
+  <button class="notifications" id="notificationBtn">View Notifications</button>
+  <button class="goalviewing" id="goalViewingBtn">View Goals</button>
+    <div class="notificationcontainer" id="notificationsContainer">
+      <h3 class="title">Notifications:</h3>
+      <div class="notificationPlaceholder" id="notificationPlaceholder"></div>
+    </div>
+</body>
+</html>

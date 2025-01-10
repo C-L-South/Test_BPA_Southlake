@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goal Logs</title>
+
+  <link rel="stylesheet" href="/css/Team_leader_log_style.css">
+
+</head>
+<body>
+  <div class="header">
+    <div class="website" id="HabitTracker">Habit Tracker</div>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+    <button class="goalsetting" id="goalSettingBtn">Set Goals</button>
+    <button class="goalviewing" id="goalViewingBtn">View Goals</button>
+    <button class="goallog" id="goalLogBtn">View Logs</button>
+    <button class="notifications" id="notificationBtn">Notifications</button>
+</div>
+  <div class="box" id="goalLogContainer">
+    <h2 class="title">Goal Logs</h2>
+    <input class="searchbar" type="search" id="searchBar" placeholder="Search logs"/>
+    <div class="text" id="goalLogs"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+  <script src = "/js/Team_leader_log_script.js"></script>
+</body>
+</html>

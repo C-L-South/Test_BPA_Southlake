@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Setting Page</title>
+
+    <link rel="stylesheet" href="/css/Team_leader_goal_style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <div class="header"></div>
+    <div class="website" id="HabitTracker">Habit Tracker</div>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+    <button class="goalsetting" id="goalSettingBtn">Set Goals</button>
+    <button class="goalviewing" id="goalViewingBtn">View Goals</button>
+    <button class="goallog" id="goalLogBtn">View Logs</button>
+    <button class="notifications" id="notificationBtn">Notifications</button>
+    <div class="container">
+        <div class="title">Set Goals</div>
+        <div class="input-fields-wrapper">
+            <div class="subtitle Goaltitle">Goal Title</div>
+            <div class="subtitle Goalunits">Goal Units</div>
+        </div>
+        <input class="input-field goaltitle" type="text" id="goalTitle" placeholder="Goal Title">
+        <input class="input-field goalunits" type="text" id="goalUnits" placeholder="Goal Units">
+        <div class="second-wrapper">
+            <div class="subtitle Goalduedate">Goal Due Date</div>
+            <div class="subtitle Goaltarget">Goal Target</div>
+        </div>
+        <input class="input-field goalduedate" type="date" id="goalDueDate" placeholder="Due Date">
+        <input class="input-field goaltarget" type="number" id="goalTarget" placeholder="Target Value">
+        <div class="subtitle Goaldescription">Goal Description</div>
+        <input class="input-field goaldescription" type="text" id="goalDescription" placeholder="Goal Description">
+        <button class="setgoal" id="setGoalBtn">Set Goal</button>
+    </div>
+    <script src="/js/Team_leader_goal_script.js"></script>
+</body>
+</html>
