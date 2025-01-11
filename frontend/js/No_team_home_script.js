@@ -45,12 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        console.log('User info got:', result.user);
+        console.log('User info got');
 
         userUid = result.user.uid;
         userEmail = result.user.email;
-
-        console.log('user info retrieved');
 
         //gets the incoming invites
         fetchInvites();
@@ -171,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try{
       if (userUid) {
-        console.log('Sending data:', { userId: userUid, teamName: Team_name_text });
+        console.log('Sending data');
         const response = await fetch(`${SERVER_URL}/createTeam`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
