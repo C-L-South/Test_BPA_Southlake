@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const userUid = result.user.uid;
         const teamName = result.user.team;
 
-        console.log('User info:', result.user);
+        console.log('User info');
 
         // Gamification logic
         if (result.user.totalContributions >= 50) {
