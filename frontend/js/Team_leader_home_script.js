@@ -50,12 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
   
-        console.log('User info got:', result.user);
+        console.log('User info got');
         userUid = result.user.uid;
         teamName = result.user.team;
         textTeamNameBox.textContent = 'You are the team leader of ' + teamName;
         updateExpiredGoals(teamName);
-        console.log('userUid: ', userUid);
       } catch (error) {
         console.error('Error retrieving user info:', error);
         alert('An error occurred while retrieving user info.');
@@ -196,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log(`Deletion of goal "${goalTitle}" logged successfully.`);
         }
       }
-      console.log('goal checked successfully');
     } catch (error) {
       console.error('Error updating expired goals:', error.message);
     }
