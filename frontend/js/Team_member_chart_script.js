@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   throw new Error('Failed to fetch user info.');
                 }
     
-                console.log('User info retrieved:', result.user);
+                console.log('User info retrieved');
     
                 // Resolve the user details
                 resolve({
