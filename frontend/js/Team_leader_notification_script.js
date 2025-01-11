@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const HabitTracker = document.getElementById('HabitTracker');
   const messageInput = document.getElementById('message');
   const sendNotificationBtn = document.getElementById('sendNotificationBtn');
-  console.log('the sendNotif is '+ document.getElementById('sendNotificationBtn'))
 
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
@@ -47,10 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
   
-        console.log('User info got:', result.user);
+        console.log('User info got');
         userUid = result.user.uid;
         teamName = result.user.team;
-        console.log('userUid: ', userUid);
       } catch (error) {
         console.error('Error retrieving user info:', error);
         alert('An error occurred while retrieving user info.');
