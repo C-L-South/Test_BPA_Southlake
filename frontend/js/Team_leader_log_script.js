@@ -43,11 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
     
     
-          console.log('User info got:', result.user);
+          console.log('User info got');
           teamName = result.user.team;
   
           userUid=result.user.uid;
-          console.log('userUid: ', userUid);
           fetchGoalLogs();
         } catch (error) {
           console.error('Error retrieving user info:', error);
