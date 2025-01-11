@@ -53,9 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           userUid = result.user.uid;
           teamName = result.user.team;
-          console.log('User info got:', result.user);
+          console.log('User info got');
   
-          console.log('userUid: ', userUid);
         } catch (error) {
           console.error('Error retrieving user info:', error);
           alert('An error occurred while retrieving user info.');
