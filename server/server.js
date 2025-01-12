@@ -682,7 +682,6 @@ app.get('/admin/reports', async (req, res) => {
       team: doc.data().team
     }));
 
-    // Map through teams and use `doc.id` as the team name
     const teams = teamsSnapshot.docs.map(doc => ({
       name: doc.id, // Use the document ID as the team name
       Leader: doc.data().Leader,
@@ -692,6 +691,56 @@ app.get('/admin/reports', async (req, res) => {
   } catch (error) {
     console.error('Error fetching reports:', error);
     res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+app.get('/teamWithMostContributions', async (req, res) => {
+  try {
+
+    const usersRef = db.collection('Users');
+    const usersSnapshot = await usersRef.get();
+
+
+    // Map 
+    const teamContributions = {};
+
+
+    usersSnapshot.forEach((doc) => {
+      const userData = doc.data();
+      if (userData.status === 'team member' && userData.team) { //check if they are team member
+        const teamName = userData.team;
+        const contribution = userData.totalContributions || 0;
+
+        // add to team
+        if (teamContributions[teamName]) {
+          teamContributions[teamName] += contribution;
+        } else {
+          teamContributions[teamName] = contribution;
+        }
+      }
+    });
+
+    // find top
+    let topTeam = null;
+    let maxContributions = 0;
+    for (const [teamName, total] of Object.entries(teamContributions)) {
+      if (total > maxContributions) {
+        topTeam = teamName;
+        maxContributions = total;
+      }
+    }
+
+    if (!topTeam) {
+      return res.status(404).json({ message: 'No contributions found for any team.' });
+    }
+
+    res.status(200).json({
+      message: 'Team with the most contributions retrieved successfully.',
+      team: topTeam,
+      totalContributions: maxContributions,
+    });
+  } catch (error) {
+    console.error('Error fetching team contributions:', error);
+    res.status(500).json({ message: 'Internal server error.' });
   }
 });
 
