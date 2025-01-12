@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('User info got');
         userUid = result.user.uid;
         teamName = result.user.team;
-        textTeamNameBox.textContent = 'You are the team leader of ' + teamName;
+        fetchAndDisplayTopTeam();
         updateExpiredGoals(teamName);
       } catch (error) {
         console.error('Error retrieving user info:', error);
@@ -61,7 +61,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-  
+  async function fetchAndDisplayTopTeam() {
+    try {
+      // Fetch the top team from the backend
+      const response = await fetch(`${SERVER_URL}/teamWithMostContributions`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+    
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch the top team.');
+      }
+    
+      const topTeamName = result.team;
+      const totalContributions = result.totalContributions;
+    
+      textTeamNameBox.textContent = `Top Team: ${topTeamName} with ${totalContributions} contributions.`;
+    } catch (error) {
+      console.error('Error fetching top team:', error);
+      textTeamNameBox.textContent = 'Error retrieving top team info.';
+    }
+  }
+
   // Handle sending invites
   sendInviteBtn.addEventListener('click', async () => {
     const emailToInvite = inviteEmail.value.trim();
